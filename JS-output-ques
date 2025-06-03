@@ -1,0 +1,537 @@
+## JavaScript Output-Based Questions with Answers and Reasoning (Based on Namaste JavaScript)
+
+### 1. **Variable Hoisting with `var`**
+
+```
+console.log(a);
+var a = 10;
+```
+
+**Answer:** `undefined`
+
+**Reasoning:**
+
+Due to hoisting, the variable `a` is declared but not yet initialized when `console.log` runs, so it has a value of `undefined`.
+
+---
+
+### 2. **Function Hoisting**
+
+```
+greet();
+function greet() {
+  console.log("Hello!");
+}
+```
+
+**Answer:** `Hello!`
+
+**Reasoning:**
+
+Function declarations are hoisted with both their name and body, making `greet()` callable before its definition.
+
+---
+
+### 3. **Function Expression Hoisting**
+
+```
+greet();
+var greet = function() {
+  console.log("Hi!");
+};
+```
+
+**Answer:** `TypeError: greet is not a function`
+
+**Reasoning:**
+
+While the variable `greet` is hoisted, its function assignment isn't. At runtime, `greet` is `undefined`, causing a TypeError when called.
+
+---
+
+### 4. **Temporal Dead Zone with `let`**
+
+```
+console.log(b);
+let b = 20;
+```
+
+**Answer:** `ReferenceError: Cannot access 'b' before initialization`
+
+**Reasoning:**
+
+Variables declared with `let` are hoisted but remain uninitialized in the temporal dead zone until their declaration line.
+
+---
+
+### 5. **Closure with Inner Function**
+
+```
+function outer() {
+  var x = 10;
+  function inner() {
+    console.log(x);
+  }
+  return inner;
+}
+var fn = outer();
+fn();
+```
+
+**Answer:** `10`
+
+**Reasoning:**
+
+The inner function creates a closure, preserving access to `x` from its parent scope even after `outer` completes execution.
+
+---
+
+### 6. **Closure with Loop and `var`**
+
+```
+for (var i = 0; i < 3; i++) {
+  setTimeout(function() {
+    console.log(i);
+  }, 1000);
+}
+```
+
+**Answer:** `3 3 3`
+
+**Reasoning:**
+
+Since `var` has function scope, all setTimeout callbacks reference the same `i`, which equals 3 when they execute.
+
+---
+
+### 7. **Closure with Loop and `let`**
+
+```
+for (let i = 0; i < 3; i++) {
+  setTimeout(function() {
+    console.log(i);
+  }, 1000);
+}
+```
+
+**Answer:** `0 1 2`
+
+**Reasoning:**
+
+`let` creates a new binding for each loop iteration, so each callback captures its own value of `i`.
+
+---
+
+### 8. **Function Returning Function**
+
+```
+function greet(message) {
+  return function(name) {
+    console.log(message + ', ' + name);
+  };
+}
+var sayHello = greet('Hello');
+sayHello('Alice');
+```
+
+**Answer:** `Hello, Alice`
+
+**Reasoning:**
+
+The returned function maintains access to `message` through closure, preserving it for later use.
+
+---
+
+### 9. **setTimeout with 0 Delay**
+
+```
+console.log('Start');
+setTimeout(function() {
+  console.log('Timeout');
+}, 0);
+console.log('End');
+```
+
+**Answer:** `Start End Timeout`
+
+**Reasoning:**
+
+Even with zero delay, `setTimeout` executes after the current call stack clears, as it's queued as a macrotask.
+
+---
+
+### 10. **Promise vs. setTimeout**
+
+```
+console.log('Start');
+setTimeout(() => console.log('Timeout'), 0);
+Promise.resolve().then(() => console.log('Promise'));
+console.log('End');
+```
+
+**Answer:** `Start End Promise Timeout`
+
+**Reasoning:**
+
+Promise microtasks have priority over setTimeout macrotasks in the event loop.
+
+---
+
+### 11. **Async/Await with setTimeout**
+
+```
+async function asyncFunc() {
+  console.log('Async Start');
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  console.log('Async End');
+}
+asyncFunc();
+console.log('After Async');
+```
+
+**Answer:** `Async Start After Async Async End`
+
+**Reasoning:**
+
+The function runs synchronously until hitting `await`, then pauses while the rest of the code executes.
+
+---
+
+### 12. **Multiple Promises**
+
+```
+Promise.resolve().then(() => console.log('Promise 1'));
+Promise.resolve().then(() => console.log('Promise 2'));
+console.log('Sync Log');
+```
+
+**Answer:** `Sync Log Promise 1 Promise 2`
+
+**Reasoning:**
+
+The microtask queue processes promise callbacks after all synchronous code completes.
+
+---
+
+### 13. **Function as Argument**
+
+```
+function sayHi() {
+  return 'Hi';
+}
+function greet(fn) {
+  console.log(fn());
+}
+greet(sayHi);
+```
+
+**Answer:** `Hi`
+
+**Reasoning:**
+
+The `sayHi` function is passed as an argument and called within `greet`.
+
+---
+
+### 14. **Function Returning Function (Again)**
+
+```
+function outer() {
+  return function() {
+    return 'Inner';
+  };
+}
+console.log(outer()());
+```
+
+**Answer:** `Inner`
+
+**Reasoning:**
+
+`outer()` returns a function that is immediately called, returning the string 'Inner'.
+
+---
+
+### 15. **Anonymous Function**
+
+```
+var greet = function() {
+  console.log('Hello');
+};
+greet();
+```
+
+**Answer:** `Hello`
+
+**Reasoning:**
+
+An anonymous function is stored in the variable `greet` and then called through that variable.
+
+---
+
+### 16. **Using `map`**
+
+```
+var nums = [1, 2, 3];
+var squares = nums.map(n => n * n);
+console.log(squares);
+```
+
+**Answer:** `[1, 4, 9]`
+
+**Reasoning:**
+
+The `map` method creates a new array by applying the squaring function to each element.
+
+---
+
+### 17. **Using `filter`**
+
+```
+var nums = [1, 2, 3, 4];
+var evens = nums.filter(n => n % 2 === 0);
+console.log(evens);
+```
+
+**Answer:** `[2, 4]`
+
+**Reasoning:**
+
+The `filter` method creates a new array containing only elements that satisfy the even number condition.
+
+---
+
+### 18. **Using `reduce`**
+
+```
+var nums = [1, 2, 3, 4];
+var sum = nums.reduce((acc, curr) => acc + curr, 0);
+console.log(sum);
+```
+
+**Answer:** `10`
+
+**Reasoning:**
+
+The `reduce` method combines all array values into a single sum, starting from 0.
+
+---
+
+### 19. **Chained Promises**
+
+```
+Promise.resolve(1)
+  .then(res => {
+    console.log(res);
+    return res + 1;
+  })
+  .then(res => {
+    console.log(res);
+  });
+```
+
+**Answer:** `1 2`
+
+**Reasoning:**
+
+The first `then` logs 1 and passes 2 to the second `then`, which logs it.
+
+---
+
+### 20. **Async Function Return**
+
+```
+async function getData() {
+  return 'Data';
+}
+getData().then(res => console.log(res));
+```
+
+**Answer:** `Data`
+
+**Reasoning:**
+
+An async function automatically wraps its return value in a Promise, which resolves to `'Data'`.
+
+---
+
+### 21. **Awaiting a Promise**
+
+```
+async function fetchData() {
+  var data = await Promise.resolve('Fetched');
+  console.log(data);
+}
+fetchData();
+
+```
+
+**Answer:** `Fetched`
+
+**Reasoning:**
+
+The `await` keyword pauses execution until the promise resolves, after which the resolved value `'Fetched'` is logged.
+
+---
+
+### 22. **Global Context**
+
+```
+console.log(this);
+
+```
+
+**Answer (in browser):** `Window { ... }`
+
+**Reasoning:**
+
+When used in the global scope, `this` refers to the global object (`window` in browsers).
+
+---
+
+### 23. **Object Method**
+
+```
+var obj = {
+  name: 'Alice',
+  greet: function() {
+    console.log(this.name);
+  }
+};
+obj.greet();
+
+```
+
+**Answer:** `Alice`
+
+**Reasoning:**
+
+Inside an object method, `this` refers to the object that owns the method.
+
+---
+
+### 24. **Arrow Function in Object**
+
+```
+var obj = {
+  name: 'Alice',
+  greet: () => {
+    console.log(this.name);
+  }
+};
+obj.greet();
+
+```
+
+**Answer:** `undefined`
+
+**Reasoning:**
+
+Arrow functions inherit `this` from their surrounding scope rather than having their own.
+
+---
+
+### 25. **Type Coercion**
+
+```
+console.log('5' - 2);
+console.log('5' + 2);
+
+```
+
+**Answer:** `3` and `'52'`
+
+**Reasoning:**
+
+- The subtraction operator (`-`) converts `'5'` to a number, while the addition operator (`+`) performs string concatenation.
+
+---
+
+### 26. **Falsy Values**
+
+```
+var values = [0, '', null, undefined, NaN, false];
+values.forEach(val => {
+  if (val) {
+    console.log('Truthy');
+  } else {
+    console.log('Falsy');
+  }
+});
+
+```
+
+**Answer:** `Falsy` printed 6 times
+
+**Reasoning:**
+
+Each value in the array evaluates to false in a boolean context.
+
+---
+
+### 27. **Short-Circuit Evaluation**
+
+```
+console.log(null || 'Default');
+console.log('Value' && 'Next');
+
+```
+
+**Answer:** `'Default'` and `'Next'`
+
+**Reasoning:**
+
+The OR operator (`||`) returns the first truthy value, while AND (`&&`) returns the last truthy value.
+
+---
+
+### 28. **Equality Operators**
+
+```
+console.log(0 == '0');
+console.log(0 === '0');
+
+```
+
+**Answer:** `true` and `false`
+
+**Reasoning:**
+
+The loose equality operator (`==`) performs type coercion, while strict equality (`===`) checks both type and value.
+
+---
+
+### 29. **Spread Operator**
+
+```
+var arr = [1, 2, 3];
+var newArr = [...arr, 4];
+console.log(newArr);
+
+```
+
+**Answer:** `[1, 2, 3, 4]`
+
+**Reasoning:**
+
+The spread operator (`...`) expands the elements of `arr` into the new array.
+
+---
+
+### 30. **Destructuring Assignment**
+
+```
+var [a, b] = [1, 2];
+console.log(a, b);
+
+```
+
+**Answer:** `1 2`
+
+**Reasoning:**
+
+Destructuring assignment extracts array values into individual variables based on their position.
+
+---
+
+✔️ All 30 questions are now complete with accurate outputs and detailed reasoning. Ready for use in technical interviews!
