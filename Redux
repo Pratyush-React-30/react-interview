@@ -1,0 +1,308 @@
+### **Basics of Redux**
+
+1. **Q:** What is Redux?
+    
+    **A:** Redux is a predictable state container for JavaScript apps, mainly used with React for managing global state in a consistent way.
+    
+    **Follow-up:** Why is Redux preferred over Context API for large-scale apps?
+    
+    **Answer:** Redux provides a predictable state update pattern and powerful middleware support (e.g., redux-thunk), making it easier to manage side effects and debugging.
+    
+2. **Q:** What are the core principles of Redux?
+    
+    **A:**
+    
+    - Single source of truth
+    - State is read-only
+    - Changes are made using pure functions (reducers)
+    
+    **Follow-up:** How does immutability help in Redux?
+    
+    **Answer:** It enables time-travel debugging, easier state tracking, and avoids unintended side effects.
+    
+3. **Q:** What is a reducer in Redux?
+    
+    **A:** A reducer is a pure function that takes the previous state and an action, and returns the next state.
+    
+    **Practical:** Write a reducer to manage a `count` state that handles `INCREMENT` and `DECREMENT` actions.
+    
+
+---
+
+### 🔹 **Redux Architecture & Components**
+
+1. **Q:** What are the main components of Redux?
+    
+    **A:** Store, Actions, Reducers.
+    
+2. **Q:** What is an action in Redux?
+    
+    **A:** An action is a plain JavaScript object with a `type` property and optionally other payload data.
+    
+    **Follow-up:** Can actions have side effects?
+    
+    **Answer:** Not directly. Side effects should be handled by middleware like redux-thunk.
+    
+3. **Q:** What does the Redux store do?
+    
+    **A:** It holds the state tree, allows state access, dispatches actions, and registers listeners.
+    
+
+---
+
+### 🔹 **React-Redux Integration**
+
+1. **Q:** How do you connect a React component to Redux?
+    
+    **A:** Using the `connect` function or `useSelector` and `useDispatch` hooks from `react-redux`.
+    
+    **Practical:** Convert a class-based component using `connect` to a functional component using hooks.
+    
+2. **Q:** What is `Provider` in Redux?
+    
+    **A:** It is a wrapper component from `react-redux` that makes the Redux store available to nested components.
+    
+
+---
+
+### 🔹 **Middleware & Side Effects**
+
+1. **Q:** What is middleware in Redux?
+    
+    **A:** Middleware provides a way to extend Redux with custom functionality like logging, async calls, etc.
+    
+2. **Q:** What is redux-thunk?
+    
+    **A:** It's a middleware that lets you write action creators that return a function instead of an action.
+    
+    **Practical:** Create an async thunk action to fetch users from an API.
+    
+3. **Q:** What are the differences between redux-thunk and redux-saga?
+    
+    **A:**
+    
+    - Thunk uses plain functions; Saga uses generator functions.
+    - Thunk is simpler; Saga is better for complex side effects.
+
+---
+
+### 🔹 **Advanced Redux**
+
+1. **Q:** What are selectors in Redux?
+    
+    **A:** Selectors are functions that extract and optionally transform data from the Redux state.
+    
+2. **Q:** What is reselect?
+    
+    **A:** A library to create memoized selectors, improving performance by avoiding unnecessary recalculations.
+    
+3. **Q:** Explain Redux DevTools.
+    
+    **A:** A browser extension to inspect Redux actions and state, and time-travel through state changes.
+    
+4. **Q:** What is combineReducers?
+    
+    **A:** A utility that merges multiple reducer functions into a single root reducer.
+    
+5. **Q:** What happens when you dispatch an action in Redux?
+    
+    **A:** The action is sent to the reducer(s) via the store, which returns a new state, triggering subscribed components to re-render.
+    
+
+---
+
+### 🔹 **Best Practices & Patterns**
+
+1. **Q:** How do you handle large Redux applications?
+    
+    **A:**
+    
+    - Use feature-based folder structure
+    - Modularize reducers and actions
+    - Use selectors and middleware
+2. **Q:** What is the “ducks” pattern in Redux?
+    
+    **A:** It co-locates actions, types, and reducers in a single module for better organization.
+    
+3. **Q:** How do you prevent unnecessary re-renders in Redux-connected components?
+    
+    **A:**
+    
+    - Use `React.memo`
+    - Use `useSelector` with shallowEqual
+    - Split state into smaller parts
+4. **Q:** How to handle form state in Redux?
+    
+    **A:** Use libraries like `redux-form` or `formik`, or manage form state locally if not needed globally.
+    
+
+---
+
+### 🔹 **Practical Questions**
+
+1. **Q:** Implement a todo app with add, remove, and toggle complete using Redux.
+2. **Q:** Build a middleware that logs each dispatched action and resulting state.
+3. **Q:** Setup redux-persist to save state across refreshes.
+4. **Q:** How would you unit test a reducer?
+5. **Q:** How would you test an async thunk action?
+
+### **Q26: How would you migrate an app from Context API to Redux?**
+
+**Answer:**
+
+To migrate from Context API to Redux:
+
+1. **Identify shared state** managed in Context (e.g., user info, auth, theme).
+2. **Install Redux and React-Redux:**
+    
+    ```bash
+    bash
+    CopyEdit
+    npm install redux react-redux
+    
+    ```
+    
+3. **Set up the Redux store**, actions, and reducers.
+4. **Wrap the app in `<Provider store={store}>`**.
+5. **Replace `useContext` with `useSelector` and `useDispatch`** in components.
+6. Optionally refactor state structure for normalization and maintainability.
+
+**Follow-up:**
+
+**Q:** Why would you migrate from Context to Redux?
+
+**A:** Context re-renders all consumers on state change. Redux optimizes updates, scales better with middleware, dev tools, and async handling (e.g., redux-thunk).
+
+---
+
+### ✅ **Q27: How would you manage loading and error states in async Redux calls?**
+
+**Answer:**
+
+Use the typical three-action pattern:
+
+1. **Start the request:**
+    
+    ```
+    ts
+    CopyEdit
+    dispatch({ type: 'FETCH_USERS_REQUEST' });
+    
+    ```
+    
+2. **Success:**
+    
+    ```
+    ts
+    CopyEdit
+    dispatch({ type: 'FETCH_USERS_SUCCESS', payload: users });
+    
+    ```
+    
+3. **Failure:**
+    
+    ```
+    ts
+    CopyEdit
+    dispatch({ type: 'FETCH_USERS_FAILURE', error: error.message });
+    
+    ```
+    
+
+**Reducer Example:**
+
+```
+ts
+CopyEdit
+const initialState = {
+  data: [],
+  loading: false,
+  error: null,
+};
+
+function userReducer(state = initialState, action) {
+  switch (action.type) {
+    case 'FETCH_USERS_REQUEST':
+      return { ...state, loading: true, error: null };
+    case 'FETCH_USERS_SUCCESS':
+      return { ...state, loading: false, data: action.payload };
+    case 'FETCH_USERS_FAILURE':
+      return { ...state, loading: false, error: action.error };
+    default:
+      return state;
+  }
+}
+
+```
+
+**Follow-up:**
+
+**Q:** Can we generalize this pattern?
+
+**A:** Yes, using custom middleware or utility functions to handle common async states and reduce boilerplate (e.g., redux-toolkit or custom hooks).
+
+---
+
+### ✅ **Q28: What’s the difference between local state, Context, and Redux? When do you use what?**
+
+| Feature | Local State (`useState`) | Context API | Redux |
+| --- | --- | --- | --- |
+| Scope | Local to component | Shared, app-wide | Global state, app-wide |
+| Performance | Efficient | Re-renders all consumers | Efficient with memoization |
+| Async/Middleware | ❌ | ❌ | ✅ redux-thunk/saga |
+| Dev Tools | ❌ | ❌ | ✅ Redux DevTools |
+| Complexity | Minimal | Moderate | Higher (boilerplate) |
+
+**Use cases:**
+
+- `useState`: Local UI state (input values, toggles).
+- `Context`: Theming, auth, language—low-frequency updates.
+- `Redux`: Complex, shared state that spans multiple components and has side effects (e.g., fetching, updating).
+
+**Follow-up:**
+
+**Q:** Can Redux and Context be used together?
+
+**A:** Yes, e.g., Context for theme or layout, Redux for app logic and async operations.
+
+---
+
+### ✅ **Q29: What are the potential drawbacks of Redux?**
+
+**Answer:**
+
+- **Boilerplate-heavy:** Requires actions, reducers, constants, and store setup.
+- **Learning curve:** Concepts like immutability, middleware, and selectors can confuse beginners.
+- **Overengineering:** For small apps, Redux may be unnecessary.
+- **Verbosity:** Even simple features can require multiple files/functions.
+
+**Follow-up:**
+
+**Q:** How do modern tools address this?
+
+**A:** Redux Toolkit simplifies Redux by abstracting boilerplate and offering prebuilt thunks, slices, and utilities.
+
+---
+
+### ✅ **Q30: When would you *not* use Redux?**
+
+**Answer:**
+
+Avoid Redux when:
+
+- Your app has minimal shared state.
+- Components don’t need cross-communication.
+- Async logic is minimal or well-handled via hooks.
+- Context API with `useReducer` suffices.
+
+**Examples:**
+
+- Static websites
+- Small apps (todo, calculator)
+- Apps where local state covers 90%+ of use cases
+
+**Follow-up:**
+
+**Q:** What can be used instead of Redux in such cases?
+
+**A:** `useContext + useReducer`, Zustand, Jotai, Recoil, or even SWR/react-query for async state.
