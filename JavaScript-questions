@@ -1,0 +1,1255 @@
+# JavaScript questions
+
+## 1. Closures and Scoping
+
+### **Q1: What is a closure in JavaScript? Provide an example.**
+
+**Answer**:
+
+A closure is a function that retains access to its lexical scope even when the function is executed outside that scope.
+
+```
+js
+CopyEdit
+function outer() {
+  let count = 0;
+  return function inner() {
+    count++;
+    console.log(count);
+  };
+}
+const counter = outer();
+counter(); // 1
+counter(); // 2
+
+```
+
+Here, `inner()` has access to `count` even after `outer()` has finished executing.
+
+**Follow-up Questions**:
+
+- What are common use cases for closures?
+- Can closures lead to memory leaks? How?
+- How can you use closures to create private variables?
+
+---
+
+## 🔀 2. Event Loop & Async Execution
+
+### **Q2: Explain the JavaScript event loop. How does it handle async code?**
+
+**Answer**:
+
+JavaScript is single-threaded but uses an event loop to manage concurrency. It uses a **call stack**, **task queue (macro-tasks)**, and **micro-task queue**.
+
+```
+js
+CopyEdit
+console.log("start");
+setTimeout(() => console.log("timeout"), 0);
+Promise.resolve().then(() => console.log("promise"));
+console.log("end");
+
+```
+
+Output:
+
+```
+arduino
+CopyEdit
+start
+end
+promise
+timeout
+
+```
+
+The micro-task queue (`Promise.then`) runs before the task queue (`setTimeout`).
+
+**Follow-up Questions**:
+
+- How are `setTimeout`, `setImmediate`, and `process.nextTick` different?
+- What’s the difference between micro-tasks and macro-tasks?
+- How does `await` impact the event loop?
+
+---
+
+## ⚙️ 3. `this` Keyword Behavior
+
+### **Q3: How does `this` behave in different contexts in JavaScript?**
+
+**Answer**:
+
+`this` depends on how a function is called:
+
+- **Global scope (non-strict mode)**: refers to `window`
+- **Strict mode**: `undefined`
+- **In a method**: the object before the dot
+- **Arrow function**: lexically bound, inherits from parent scope
+- **Constructor**: the new object
+
+```
+js
+CopyEdit
+const obj = {
+  count: 0,
+  inc: function () {
+    return ++this.count;
+  },
+};
+
+```
+
+**Follow-up Questions**:
+
+- Why doesn’t `this` work inside an arrow function as expected in a class method?
+- How do `call`, `apply`, and `bind` change `this`?
+- What does `this` refer to in event handlers?
+
+---
+
+## 🧵 4. Prototypes and Inheritance
+
+### **Q4: What is prototypal inheritance in JavaScript?**
+
+**Answer**:
+
+Objects can inherit properties from other objects via their prototype chain. Every object has an internal `[[Prototype]]` (accessible via `__proto__` or `Object.getPrototypeOf()`).
+
+```
+js
+CopyEdit
+function Animal(name) {
+  this.name = name;
+}
+Animal.prototype.speak = function () {
+  return `${this.name} makes a noise`;
+};
+
+```
+
+**Follow-up Questions**:
+
+- How does `class` in ES6 relate to prototypal inheritance?
+- How would you implement inheritance manually using `Object.create()`?
+- What happens if you override a method in the prototype?
+
+---
+
+## 🧰 5. Deep vs Shallow Copy
+
+### **Q5: What's the difference between a shallow copy and a deep copy in JavaScript?**
+
+**Answer**:
+
+- **Shallow copy** copies only the first level. Nested objects remain references.
+- **Deep copy** recursively copies all nested levels.
+
+```
+js
+CopyEdit
+const original = { a: 1, b: { c: 2 } };
+const shallow = { ...original }; // `b` is still a reference
+const deep = JSON.parse(JSON.stringify(original)); // deep copy
+
+```
+
+**Follow-up Questions**:
+
+- What are the limitations of using `JSON.stringify` for deep copying?
+- How can you handle circular references in a deep copy?
+- Can you write a recursive deep copy function?
+
+---
+
+## 🧠 6. Memory Management
+
+### **Q6: How does JavaScript manage memory?**
+
+**Answer**:
+
+JavaScript uses **garbage collection** primarily through **mark-and-sweep**. It deallocates memory by removing objects that are no longer reachable.
+
+**Follow-up Questions**:
+
+- What are memory leaks in JS? Give examples.
+- How do closures or timers cause leaks?
+- How would you detect and debug memory leaks?
+
+---
+
+## ⚡ 7. Hoisting
+
+### **Q7: What is hoisting in JavaScript? How does it differ between `var`, `let`, and `const`?**
+
+**Answer**:
+
+Hoisting is JavaScript's behavior of moving declarations to the top of the scope.
+
+- `var`: hoisted and initialized as `undefined`
+- `let`/`const`: hoisted but not initialized — they exist in the **Temporal Dead Zone**
+
+```
+js
+CopyEdit
+console.log(a); // undefined
+var a = 10;
+
+console.log(b); // ReferenceError
+let b = 20;
+
+```
+
+**Follow-up Questions**:
+
+- What is the Temporal Dead Zone?
+- Why is `typeof x === "undefined"` not always safe?
+
+---
+
+## ⚙️ 8. Functional Programming Concepts
+
+### **Q8: Explain the difference between `.map()`, `.forEach()`, `.filter()`, and `.reduce()`.**
+
+**Answer**:
+
+- `.forEach()` – executes function for each element (no return)
+- `.map()` – returns new array with transformed elements
+- `.filter()` – returns elements matching a condition
+- `.reduce()` – reduces array to a single value
+
+```
+js
+CopyEdit
+const arr = [1, 2, 3];
+arr.map(x => x * 2);      // [2, 4, 6]
+arr.filter(x => x > 1);   // [2, 3]
+arr.reduce((a, b) => a + b, 0); // 6
+
+```
+
+**Follow-up Questions**:
+
+- When would you use `.reduce()` over `.map()` or `.filter()`?
+- Can you implement `.map()` using `.reduce()`?
+
+---
+
+## 📦 9. Modules and Imports
+
+### **Q9: What is the difference between CommonJS and ES6 Modules?**
+
+**Answer**:
+
+- **CommonJS** (Node.js): uses `require`, synchronous loading
+- **ES Modules**: uses `import/export`, static analysis, async loading in browsers
+
+```
+js
+CopyEdit
+// CommonJS
+const lib = require('lib');
+
+// ES6
+import lib from 'lib';
+
+```
+
+**Follow-up Questions**:
+
+- How do you enable ES Modules in Node.js?
+- Can you dynamically import modules in ES6?
+
+---
+
+## 💥 10. Tricky/Edge Case
+
+### **Q10: What is the output of the following and why?**
+
+```
+js
+CopyEdit
+let a = [1, 2, 3];
+let b = [1, 2, 3];
+
+console.log(a == b); // false
+console.log(JSON.stringify(a) === JSON.stringify(b)); // true
+
+```
+
+**Answer**:
+
+- `a == b` → false because arrays are reference types, and the references differ.
+- `JSON.stringify(a)` returns the same string → true
+
+**Follow-up Questions**:
+
+- How can you compare two objects or arrays deeply in JS?
+- What’s a performant way to detect object structural equality?
+
+---
+
+## 
+
+## 🎯 11. Event Delegation
+
+### **Q11: What is event delegation in JavaScript? Why is it useful?**
+
+**Answer**:
+
+Event delegation is a technique where a single event listener is attached to a parent element to manage events triggered by its child elements, leveraging event bubbling.
+
+```
+js
+CopyEdit
+document.getElementById("list").addEventListener("click", function (e) {
+  if (e.target.tagName === "LI") {
+    console.log("Item clicked:", e.target.textContent);
+  }
+});
+
+```
+
+**Benefits**:
+
+- Fewer event listeners
+- Works for dynamically added elements
+
+**Follow-up Questions**:
+
+- What’s the difference between event bubbling and capturing?
+- What are potential pitfalls of event delegation?
+
+---
+
+## ⚙️ 12. Debouncing vs Throttling
+
+### **Q12: What is the difference between debouncing and throttling?**
+
+**Answer**:
+
+- **Debounce**: Delays execution until after a specified delay since the last trigger.
+- **Throttle**: Ensures a function is called at most once per interval.
+
+```
+js
+CopyEdit
+function debounce(fn, delay) {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn(...args), delay);
+  };
+}
+
+```
+
+**Use Cases**:
+
+- **Debounce**: Input search
+- **Throttle**: Scroll/resize handlers
+
+**Follow-up Questions**:
+
+- Can you implement throttle?
+- What libraries help with this?
+
+---
+
+## 🧱 13. DOM Manipulation
+
+### **Q13: What are the pros/cons of direct DOM manipulation vs using virtual DOM (like React)?**
+
+**Answer**:
+
+- **Direct DOM**:
+    - ✅ Fine control
+    - ❌ Manual state management
+- **Virtual DOM**:
+    - ✅ Declarative
+    - ✅ Optimized diffing and updates
+    - ❌ Overhead, learning curve
+
+**Follow-up Questions**:
+
+- How does the virtual DOM differ from the actual DOM?
+- Can you bypass React’s rendering and access the DOM directly?
+
+---
+
+## ⚡ 14. Rendering Performance
+
+### **Q14: What causes reflows and repaints in the browser? How can you optimize them?**
+
+**Answer**:
+
+- **Reflow**: Layout changes (e.g., DOM structure, size, position)
+- **Repaint**: Style changes (e.g., color, shadow) without layout shift
+
+**Optimizations**:
+
+- Avoid layout thrashing
+- Batch DOM reads/writes
+- Use `requestAnimationFrame`
+- Use CSS transforms instead of `top/left`
+
+**Follow-up Questions**:
+
+- What is layout thrashing?
+- How do tools like Chrome DevTools help you profile reflows?
+
+---
+
+## 🔐 15. XSS Protection in JavaScript
+
+### **Q15: How do you protect your frontend code against XSS attacks?**
+
+**Answer**:
+
+- Sanitize user input (use libraries like DOMPurify)
+- Never use `innerHTML` with untrusted input
+- Use Content Security Policy (CSP) headers
+
+```
+js
+CopyEdit
+// BAD
+element.innerHTML = userInput;
+
+// GOOD
+element.textContent = userInput;
+
+```
+
+**Follow-up Questions**:
+
+- What is the difference between stored and reflected XSS?
+- How does React help protect against XSS?
+
+---
+
+## 🔁 16. Async/Await in Loops
+
+### **Q16: How does `async/await` behave in a loop like `forEach`?**
+
+**Answer**:
+
+`forEach` doesn't await `async` functions.
+
+```
+js
+CopyEdit
+[1, 2, 3].forEach(async (num) => {
+  await doSomething(num);
+}); // Won’t work as expected
+
+```
+
+Use `for...of` instead:
+
+```
+js
+CopyEdit
+for (const num of [1, 2, 3]) {
+  await doSomething(num);
+}
+
+```
+
+**Follow-up Questions**:
+
+- Why doesn’t `forEach` work with `await`?
+- What other pitfalls exist with `async` and `setTimeout`, `map`, etc.?
+
+---
+
+## 🪝 17. JavaScript Memory Leaks in the Browser
+
+### **Q17: What are common sources of memory leaks in a frontend app?**
+
+**Answer**:
+
+- Unremoved event listeners
+- Detached DOM nodes with active references
+- Closures holding large unused variables
+- Intervals/timeouts not cleared
+
+**Follow-up Questions**:
+
+- How do you identify and fix a memory leak?
+- What DevTools features help analyze heap snapshots?
+
+---
+
+## 🧩 18. Implicit Coercion
+
+### **Q18: What’s the output of this code? Why?**
+
+```
+js
+CopyEdit
+console.log([] + {}); // "[object Object]"
+console.log({} + []); // 0 or "[object Object][object Object]"
+
+```
+
+**Answer**:
+
+- `[] + {}` → `"" + "[object Object]"` → `"[object Object]"`
+- `{}` is ambiguous at the start of line — could be block or object
+
+**Follow-up Questions**:
+
+- How do you distinguish between implicit and explicit coercion?
+- What’s `Symbol.toPrimitive`?
+
+---
+
+## 🧪 19. Type Checking
+
+### **Q19: How can you reliably detect types in JavaScript?**
+
+**Answer**:
+
+Use `Object.prototype.toString.call(obj)`:
+
+```
+js
+CopyEdit
+Object.prototype.toString.call([]); // "[object Array]"
+
+```
+
+`typeof` has flaws:
+
+```
+js
+CopyEdit
+typeof null; // "object" (bug)
+typeof []; // "object"
+
+```
+
+**Follow-up Questions**:
+
+- What are all the `typeof` return types?
+- How do `instanceof` and `constructor.name` compare?
+
+---
+
+## 🎨 20. Render Blocking
+
+### **Q20: What makes JavaScript render-blocking in browsers?**
+
+**Answer**:
+
+- Scripts in `<head>` without `defer` or `async` pause HTML parsing.
+- Large JS bundles delay first render.
+
+**Optimizations**:
+
+- Use `defer` or `async`
+- Lazy-load modules
+- Minify and split JS bundles
+
+**Follow-up Questions**:
+
+- What’s the difference between `defer` and `async`?
+- How does hydration in React differ from SSR?
+
+---
+
+---
+
+## 🌐 21. LocalStorage vs SessionStorage vs Cookies
+
+### **Q21: What are the differences between `localStorage`, `sessionStorage`, and cookies?**
+
+**Answer**:
+
+| Feature | localStorage | sessionStorage | Cookies |
+| --- | --- | --- | --- |
+| Storage Limit | ~5–10MB | ~5–10MB | ~4KB |
+| Lifetime | Until manually cleared | Until tab is closed | Can be set with expiry |
+| Sent with requests | ❌ | ❌ | ✅ (on every HTTP request) |
+| Accessibility | JS only | JS only | JS + Server (if not `HttpOnly`) |
+
+**Follow-up Questions**:
+
+- What are the security concerns with storing JWTs in `localStorage`?
+- When would you prefer cookies over localStorage?
+
+---
+
+## 🔐 22. Secure Client-Side Authentication
+
+### **Q22: How do you securely manage authentication on the frontend?**
+
+**Answer**:
+
+- Store tokens in memory or HttpOnly cookies (preferred)
+- Avoid `localStorage` for sensitive data
+- Use CSRF tokens with cookies
+- Validate tokens on each request
+
+**Follow-up Questions**:
+
+- What's the difference between XSS and CSRF?
+- Why is HttpOnly + Secure cookie safer than localStorage?
+
+---
+
+## 🧪 23. Unit vs Integration Testing in FE
+
+### **Q23: What is the difference between unit testing and integration testing in frontend apps?**
+
+**Answer**:
+
+- **Unit tests**: Test individual functions/components in isolation (e.g., Jest).
+- **Integration tests**: Test interactions between modules (e.g., React + API mocks).
+
+**Follow-up Questions**:
+
+- What tools do you use for frontend testing?
+- How do you test React components using hooks?
+
+---
+
+## 🧭 24. Custom Events
+
+### **Q24: How do you create and dispatch a custom event in the browser?**
+
+**Answer**:
+
+```
+js
+CopyEdit
+const event = new CustomEvent("userLoggedIn", {
+  detail: { userId: 123 },
+});
+document.dispatchEvent(event);
+
+document.addEventListener("userLoggedIn", (e) => {
+  console.log("User ID:", e.detail.userId);
+});
+
+```
+
+**Follow-up Questions**:
+
+- How are custom events different from native ones?
+- Can you bubble or cancel custom events?
+
+---
+
+## 🧊 25. Immutable State Management
+
+### **Q25: Why is immutability important in frontend development?**
+
+**Answer**:
+
+- Predictable state updates
+- Optimized re-rendering in libraries like React
+- Enables undo/redo functionality
+
+```
+js
+CopyEdit
+const newState = { ...state, value: 42 }; // Avoid direct mutation
+
+```
+
+**Follow-up Questions**:
+
+- How does React detect changes via shallow comparison?
+- How do libraries like Immer simplify immutability?
+
+---
+
+## 🔁 26. Infinite Scroll Pitfalls
+
+### **Q26: What are challenges of implementing infinite scroll?**
+
+**Answer**:
+
+- Memory bloat from retained DOM nodes
+- Scroll jank and performance
+- Accessibility issues
+- SEO (if content is dynamically loaded)
+
+**Follow-up Questions**:
+
+- How can IntersectionObserver help?
+- How do you improve performance in long virtual lists?
+
+---
+
+## 🎯 27. requestAnimationFrame vs setTimeout
+
+### **Q27: What’s the difference between `requestAnimationFrame` and `setTimeout`?**
+
+**Answer**:
+
+- `setTimeout(fn, 16)` → Not synchronized with screen refresh
+- `requestAnimationFrame(fn)` → Called before the next repaint (~60 FPS)
+
+**Follow-up Questions**:
+
+- When would `setTimeout` cause layout jank?
+- Can you use `requestAnimationFrame` for debouncing animations?
+
+---
+
+## 🧱 28. Shadow DOM
+
+### **Q28: What is Shadow DOM and why is it useful?**
+
+**Answer**:
+
+Shadow DOM provides encapsulation for component styles and DOM structure.
+
+```
+js
+CopyEdit
+const shadow = element.attachShadow({ mode: "open" });
+shadow.innerHTML = `<style>p { color: red }</style><p>Hello</p>`;
+
+```
+
+**Follow-up Questions**:
+
+- What are the modes (`open` vs `closed`)?
+- How do you style elements inside a shadow DOM?
+
+---
+
+## 🔄 29. Lazy Loading and Code Splitting
+
+### **Q29: What is code splitting? How do you implement it in a React app?**
+
+**Answer**:
+
+Code splitting breaks the app bundle into smaller chunks that are loaded only when needed.
+
+```
+js
+CopyEdit
+const LazyComponent = React.lazy(() => import('./MyComponent'));
+
+```
+
+Use `<Suspense>` to handle fallback UI.
+
+**Follow-up Questions**:
+
+- How is this different from dynamic imports?
+- How do you handle errors in lazy-loaded components?
+
+---
+
+## 🧠 30. Tricky JS Logic Puzzle
+
+### **Q30: What is the output of the following code?**
+
+```
+js
+CopyEdit
+let obj = { a: 1 };
+Object.defineProperty(obj, "b", {
+  value: 2,
+  enumerable: false,
+});
+console.log(Object.keys(obj)); // ?
+console.log(obj.b);            // ?
+
+```
+
+**Answer**:
+
+- `Object.keys(obj)` → `['a']` (because `b` is non-enumerable)
+- `obj.b` → `2` (accessible but hidden from iteration)
+
+**Follow-up Questions**:
+
+- How can you make a property read-only?
+- How do `enumerable`, `writable`, and `configurable` work?
+
+# Answers to Follow ups
+
+### **1. Closures and Scoping**
+
+- **Common use cases for closures**:
+    - Data privacy (private variables)
+    - Memoization and caching
+    - Function factories
+    - Event handlers with saved state
+- **Can closures lead to memory leaks? How?**
+    
+    Yes. If closures reference large objects and aren't dereferenced properly, they prevent garbage collection.
+    
+- **How to use closures to create private variables?**
+    
+    ```
+    js
+    CopyEdit
+    function counter() {
+      let count = 0;
+      return {
+        increment: () => ++count,
+        get: () => count,
+      };
+    }
+    const c = counter();
+    c.increment(); // 1
+    
+    ```
+    
+
+---
+
+### **2. Event Loop & Async Execution**
+
+- **Difference: `setTimeout`, `setImmediate`, `process.nextTick`**:
+    - `setTimeout(fn, 0)` → queued in macrotask
+    - `setImmediate(fn)` → Node.js only, fires after I/O
+    - `process.nextTick(fn)` → runs before any I/O, microtask
+- **Micro vs Macro tasks**:
+    - **Microtasks**: `Promise.then`, `MutationObserver`, `queueMicrotask`
+    - **Macrotasks**: `setTimeout`, `setInterval`, `setImmediate`
+- **How `await` impacts event loop**:
+    
+    Pauses execution in async functions and resumes after microtask queue clears.
+    
+
+---
+
+### **3. `this` Keyword Behavior**
+
+- **Why `this` doesn’t work inside arrow functions in class methods?**
+    
+    Arrow functions don't have their own `this`. They inherit from the surrounding scope (likely `undefined` if not bound properly).
+    
+- **How do `call`, `apply`, `bind` work?**
+    
+    They set the value of `this` explicitly:
+    
+    - `func.call(context, arg1, arg2)`
+    - `func.apply(context, [arg1, arg2])`
+    - `func.bind(context)` returns a new function
+- **`this` in event handlers**:
+    
+    Depends on how it's attached. Use `.bind()` or arrow functions for correct binding in classes.
+    
+
+---
+
+### **4. Prototypes and Inheritance**
+
+- **ES6 `class` vs prototypal inheritance**:
+    
+    ES6 `class` is syntactic sugar over prototypal inheritance.
+    
+- **Manual inheritance with `Object.create()`**:
+    
+    ```
+    js
+    CopyEdit
+    const animal = { speak() { return "sound"; } };
+    const dog = Object.create(animal);
+    
+    ```
+    
+- **Overriding a method in prototype**:
+    
+    The instance method shadows the prototype method.
+    
+
+---
+
+### **5. Deep vs Shallow Copy**
+
+- **Limitations of `JSON.stringify()`**:
+    - Doesn’t copy `undefined`, functions, circular refs, symbols, `Map`, `Set`
+- **Handling circular references**:
+    
+    Use structured cloning (`structuredClone(obj)`) or libraries like Lodash’s `cloneDeep`.
+    
+- **Recursive deep copy function**:
+    
+    ```
+    js
+    CopyEdit
+    function deepCopy(obj) {
+      if (obj === null || typeof obj !== "object") return obj;
+      const result = Array.isArray(obj) ? [] : {};
+      for (let key in obj) result[key] = deepCopy(obj[key]);
+      return result;
+    }
+    
+    ```
+    
+
+---
+
+### **6. Memory Management**
+
+- **Examples of memory leaks**:
+    - Global variables
+    - Unclosed intervals/timers
+    - DOM references in closures after removal
+- **Closures/timers causing leaks**:
+    
+    They retain scope and prevent GC.
+    
+- **Detect memory leaks**:
+    
+    Chrome DevTools → Memory → Heap snapshot → Retainers/Leak suspects
+    
+
+---
+
+### **7. Hoisting**
+
+- **What is Temporal Dead Zone (TDZ)?**
+    
+    Period between hoisting and initialization for `let`/`const`. Accessing variables during TDZ throws a `ReferenceError`.
+    
+- **Why `typeof x === "undefined"` isn’t safe**:
+    
+    If `x` is in TDZ (declared with `let`/`const`), `typeof` still throws an error.
+    
+
+---
+
+### **8. Functional Programming Concepts**
+
+- **When to use `reduce()` over `map()` or `filter()`**:
+    
+    When you want to derive a single accumulated value (e.g., sum, object merge, grouping).
+    
+- **Implement `map()` using `reduce()`**:
+    
+    ```
+    js
+    CopyEdit
+    const arr = [1, 2, 3];
+    const mapped = arr.reduce((acc, val) => {
+      acc.push(val * 2);
+      return acc;
+    }, []);
+    
+    ```
+    
+
+---
+
+### **9. Modules and Imports**
+
+- **Enable ES Modules in Node.js**:
+    - Add `"type": "module"` to `package.json`
+    - Use `.mjs` extension
+    - Use `import`/`export`
+- **Dynamic imports in ES6**:
+    
+    ```
+    js
+    CopyEdit
+    import('./module.js').then((mod) => mod.default());
+    
+    ```
+    
+
+---
+
+### **10. Tricky Object Comparison**
+
+- **Deep compare two objects/arrays**:
+    
+    Use recursive functions or libraries like Lodash’s `isEqual`.
+    
+- **Performant structural equality check**:
+    - For simple objects: `JSON.stringify(a) === JSON.stringify(b)`
+    - For deep: custom or library-based deep equality check
+
+---
+
+### **11. Event Delegation**
+
+- **Bubbling vs Capturing**:
+    - **Capturing**: top to target
+    - **Bubbling**: target to top (default)
+- **Pitfalls**:
+    - Incorrect `e.target` assumptions
+    - Stale references in dynamic UIs
+
+---
+
+### **12. Debouncing vs Throttling**
+
+- **Throttle implementation**:
+    
+    ```
+    js
+    CopyEdit
+    function throttle(fn, limit) {
+      let inThrottle;
+      return (...args) => {
+        if (!inThrottle) {
+          fn(...args);
+          inThrottle = true;
+          setTimeout(() => inThrottle = false, limit);
+        }
+      };
+    }
+    
+    ```
+    
+- **Helpful libraries**: Lodash, RxJS
+
+---
+
+### **13. DOM Manipulation**
+
+- **Virtual DOM vs Real DOM**:
+    
+    Virtual DOM is an in-memory representation; updates are batched/diffed.
+    
+- **Bypass React rendering**:
+    
+    Use `useRef()` and access DOM via `ref.current`.
+    
+
+---
+
+### **14. Reflows and Repaints**
+
+- **What is layout thrashing?**
+    
+    Repeated reads/writes that force reflow:
+    
+    ```
+    js
+    CopyEdit
+    // BAD
+    for (...) {
+      el.style.height = el.offsetHeight + "px";
+    }
+    
+    ```
+    
+- **Use DevTools**:
+    
+    Chrome DevTools → Performance → Layout & Paint markers
+    
+
+---
+
+### **15. XSS Protection**
+
+- **Stored vs Reflected XSS**:
+    - **Stored**: malicious code saved on server
+    - **Reflected**: payloads in URL or input reflected in response
+- **React protection**:
+    
+    Escapes input by default in JSX
+    
+
+---
+
+### **16. Async/Await in Loops**
+
+- **Why `forEach` doesn't work**:
+    
+    It doesn’t wait for `async` callbacks.
+    
+- **Pitfalls**:
+    - `setTimeout` in `async` loops behaves unpredictably
+    - `.map()` doesn't await inside unless `Promise.all` is used
+
+---
+
+### **17. Memory Leaks in Browser**
+
+- **Identify leaks**:
+    - Chrome DevTools → Memory tab → Snapshots
+    - Check detached nodes
+- **Fix**:
+    - Remove event listeners
+    - Nullify references
+    - Use WeakMap for cache
+
+---
+
+### **18. Implicit Coercion**
+
+- **Implicit vs Explicit coercion**:
+    - Implicit: `"" + 1`, `[] == false`
+    - Explicit: `Number("123")`, `Boolean(0)`
+- **`Symbol.toPrimitive`**:
+    
+    Custom coercion behavior:
+    
+    ```
+    js
+    CopyEdit
+    obj[Symbol.toPrimitive] = (hint) => hint === "number" ? 42 : "str";
+    
+    ```
+    
+
+---
+
+### **19. Type Checking**
+
+- **All `typeof` return types**:
+    - `"undefined"`, `"object"`, `"boolean"`, `"number"`, `"string"`, `"symbol"`, `"function"`, `"bigint"`
+- **`instanceof` vs `constructor.name`**:
+    - `instanceof`: checks prototype chain
+    - `constructor.name`: gives constructor’s name (may be minified)
+
+---
+
+### **20. Render Blocking**
+
+- **`defer` vs `async`**:
+    - `defer`: waits for parsing, preserves order
+    - `async`: executes as soon as downloaded, unordered
+- **Hydration vs SSR**:
+    - SSR: renders on server
+    - Hydration: adds event listeners to pre-rendered HTML
+
+---
+
+### **21. Storage Mechanisms**
+
+- **Security concerns with JWT in localStorage**:
+    
+    Susceptible to XSS. Better to use HttpOnly secure cookies.
+    
+- **When to prefer cookies**:
+    - When server needs to read token
+    - For cross-origin session management
+
+---
+
+### **22. Secure Client-Side Authentication**
+
+- **XSS vs CSRF**:
+    - XSS: injects JS
+    - CSRF: tricks browser into sending requests with cookies
+- **Why HttpOnly + Secure is safer**:
+    - JS can’t access cookies
+    - Transmitted only over HTTPS
+
+---
+
+### **23. Testing Types**
+
+- **Tools**:
+    - Unit: Jest, Vitest
+    - Integration: Cypress, React Testing Library
+- **Testing hooks**:
+    
+    Use `renderHook` from `@testing-library/react-hooks`
+    
+
+---
+
+### **24. Custom Events**
+
+- **Custom vs Native events**:
+    
+    Custom events are created by developers and can carry custom payloads.
+    
+- **Can custom events bubble/cancel?**
+    
+    Yes, use options:
+    
+    ```
+    js
+    CopyEdit
+    new CustomEvent("myEvent", { bubbles: true, cancelable: true })
+    
+    ```
+    
+
+---
+
+### **25. Immutability**
+
+- **React shallow comparison**:
+    
+    React uses `Object.is` on `props`/`state` to prevent re-renders
+    
+- **Immer**:
+    
+    Allows writing mutable-style code that produces immutable updates
+    
+
+---
+
+### **26. Infinite Scroll**
+
+- **IntersectionObserver**:
+    
+    Efficient API to detect element visibility
+    
+- **Improve performance**:
+    - Use virtualization (e.g., react-window)
+    - Limit DOM node count
+
+---
+
+### **27. `requestAnimationFrame` vs `setTimeout`**
+
+- **When `setTimeout` causes jank**:
+    
+    JS runs too slow or outside the repaint cycle, causing frame drops
+    
+- **Use `requestAnimationFrame` for debouncing**:
+    
+    Yes, especially for animation tasks
+    
+
+---
+
+### **28. Shadow DOM**
+
+- **Modes**:
+    - `open`: can access via `element.shadowRoot`
+    - `closed`: not accessible via JS
+- **Styling inside Shadow DOM**:
+    
+    Use scoped CSS or `::part`/`::slotted` for customization
+    
+
+---
+
+### **29. Code Splitting**
+
+- **Difference from dynamic import**:
+    
+    Dynamic import gives you more control; React lazy does it with suspense integration
+    
+- **Handle errors**:
+    
+    Use `Suspense` fallback with error boundaries or `.catch()` on dynamic imports
+    
+
+---
+
+### **30. Property Descriptors**
+
+- **Make property read-only**:
+    
+    ```
+    js
+    CopyEdit
+    Object.defineProperty(obj, "a", { writable: false });
+    
+    ```
+    
+- **`enumerable`, `writable`, `configurable`**:
+    - `enumerable`: shows in loops
+    - `writable`: value can be changed
+    - `configurable`: can be deleted or reconfigured
