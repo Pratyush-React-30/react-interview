@@ -1,0 +1,241 @@
+## 🧱 HTML Questions
+
+### **Q1. What are semantic HTML elements and why are they important?**
+
+**Answer:** Semantic HTML tags (like `<article>`, `<section>`, `<header>`, `<main>`, `<footer>`) provide meaning to the content and help with accessibility, SEO, and maintainability.
+
+**Follow-up:**
+
+- How do screen readers benefit from semantic HTML?
+- Compare `<div>` vs `<section>` in terms of accessibility.
+
+---
+
+### **Q2. What are data attributes in HTML?**
+
+**Answer:** Custom attributes prefixed with `data-` (e.g., `data-user-id`) used to store extra information without affecting layout or functionality.
+
+**Follow-up:**
+
+- How do you access data attributes using JavaScript?
+- When would you use data attributes over custom properties in JavaScript?
+
+---
+
+### **Q3. What is the difference between `id` and `class` in HTML?**
+
+**Answer:**
+
+- `id`: unique identifier (one element only)
+- `class`: reusable style identifier (multiple elements)
+
+**Follow-up:**
+
+- Why should `id` be avoided in CSS specificity-heavy codebases?
+
+---
+
+### **Q4. How does the `defer` and `async` attribute on `<script>` tags work?**
+
+**Answer:**
+
+- `defer`: scripts run after HTML parsing (preserves order)
+- `async`: scripts run as soon as they load (order not guaranteed)
+
+**Follow-up:**
+
+- When would you use `async` vs `defer`?
+
+---
+
+### **Q5. What is the difference between `<input type=\"button\">`, `<button>`, and `<input type=\"submit\">`?**
+
+**Answer:**
+
+- `<input type=\"button\">`: needs `onclick`
+- `<button>`: flexible, can contain HTML
+- `<input type=\"submit\">`: triggers form submission
+
+**Follow-up:**
+
+- How do browser defaults differ between these types?
+
+---
+
+## 🎨 CSS Questions
+
+### **Q6. What is the difference between `relative`, `absolute`, `fixed`, and `sticky` positioning?**
+
+**Answer:**
+
+- `relative`: positioned relative to its normal position
+- `absolute`: positioned relative to the nearest positioned ancestor
+- `fixed`: relative to the viewport
+- `sticky`: toggles between `relative` and `fixed` based on scroll
+
+**Follow-up:**
+
+- What happens if no ancestor has `position: relative` and a child is `absolute`?
+
+---
+
+### **Q7. What is specificity in CSS and how is it calculated?**
+
+**Answer:**
+
+- Specificity determines which CSS rule applies when multiple match.
+- Inline styles > IDs > Classes/attributes > Elements
+
+**Follow-up:**
+
+- How do you override high specificity rules without `!important`?
+
+---
+
+### **Q8. Explain the difference between `em`, `rem`, `%`, `vh`, `vw` units.**
+
+**Answer:**
+
+- `em`: relative to parent
+- `rem`: relative to root (`html`)
+- `%`: relative to parent container
+- `vh`, `vw`: viewport height/width
+
+**Follow-up:**
+
+- Why is `rem` preferred in modern responsive designs?
+
+---
+
+### **Q9. What is the Box Model in CSS?**
+
+**Answer:**
+
+Content → Padding → Border → Margin
+
+`box-sizing: content-box` vs `box-sizing: border-box`
+
+**Follow-up:**
+
+- How does `border-box` help in layout predictability?
+
+---
+
+### **Q10. How does Flexbox differ from CSS Grid?**
+
+**Answer:**
+
+- **Flexbox**: 1D layout (row or column)
+- **Grid**: 2D layout (rows and columns)
+
+**Follow-up:**
+
+- When would you choose Grid over Flexbox?
+
+---
+
+---
+
+## 🧱 HTML – Follow-Up Answers
+
+### Q1. Semantic HTML
+
+**How do screen readers benefit from semantic HTML?**
+
+Screen readers interpret elements like `<header>`, `<nav>`, `<main>`, and `<footer>` to inform users about the structure, enabling easier navigation.
+
+**Compare `<div>` vs `<section>` in terms of accessibility.**
+
+- `<div>` has no semantic meaning.
+- `<section>` conveys a thematic grouping of content, useful for screen readers and search engines.
+
+---
+
+### Q2. Data Attributes
+
+**How do you access data attributes using JavaScript?**
+
+```
+js
+CopyEdit
+const el = document.querySelector("[data-user-id]");
+console.log(el.dataset.userId); // camelCased
+
+```
+
+**When would you use data attributes over custom properties in JavaScript?**
+
+- Use `data-*` when passing non-sensitive metadata into HTML for styling or scripting.
+- Avoid using them for application logic or storing sensitive information.
+
+---
+
+### Q3. `id` vs `class`
+
+**Why should `id` be avoided in CSS specificity-heavy codebases?**
+
+IDs have very high specificity, making it difficult to override styles. Classes are easier to manage and override using standard cascading logic.
+
+---
+
+### Q4. `defer` vs `async`
+
+**When would you use `async` vs `defer`?**
+
+- Use `async` for scripts that don't depend on others or DOM (e.g., analytics).
+- Use `defer` for scripts that interact with DOM or need to preserve order.
+
+---
+
+### Q5. Button Types
+
+**How do browser defaults differ between these types?**
+
+- `<button>` defaults to `submit` in forms unless `type` is specified.
+- `<input type="button">` doesn’t submit forms unless JavaScript handles it.
+- `<input type="submit">` triggers form submission automatically.
+
+---
+
+## 🎨 CSS – Follow-Up Answers
+
+### Q6. Positioning
+
+**What happens if no ancestor has `position: relative` and a child is `absolute`?**
+
+The element is positioned relative to the `html` element (viewport), potentially causing layout issues.
+
+---
+
+### Q7. Specificity
+
+**How do you override high specificity rules without `!important`?**
+
+- Use a more specific selector (e.g., chaining classes or nesting)
+- Refactor CSS to reduce specificity.
+- Use `:where()` to reset specificity in modern CSS.
+
+---
+
+### Q8. Units
+
+**Why is `rem` preferred in modern responsive designs?**
+
+`rem` ensures consistent sizing across components since it’s based on the root (`html`) font size, making layouts more predictable and easier to scale.
+
+---
+
+### Q9. Box Model
+
+**How does `border-box` help in layout predictability?**
+
+With `border-box`, the width includes padding and border. This prevents layout shifts and simplifies calculations for fixed-width elements.
+
+---
+
+### Q10. Flexbox vs Grid
+
+**When would you choose Grid over Flexbox?**
+
+- Use **Grid** for complex 2D layouts (e.g., dashboards, templates).
+- Use **Flexbox** for simple 1D layouts (e.g., horizontal/vertical navs).
