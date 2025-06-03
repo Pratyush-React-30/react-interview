@@ -1,0 +1,356 @@
+## Practical Frontend Interview Questions (JavaScript, React, Next.js, GraphQL, HTML/CSS)
+
+### JavaScript
+
+**Q1. Implement a debounce function in JavaScript.**
+
+```
+function debounce(fn, delay) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+```
+
+*Follow-up:* What's the key difference between `debounce` and `throttle`?
+
+**Answer:** Debounce delays function execution until a pause in events, while throttle ensures a function runs at most once per interval.
+
+---
+
+**Q2. Given an array of integers, remove duplicates.**
+
+```
+const unique = (arr) => [...new Set(arr)];
+```
+
+*Follow-up:* How does `Set` ensure uniqueness?
+
+**Answer:** `Set` stores only unique values. It automatically removes duplicates when converting an array.
+
+---
+
+**Q3. Write a function to deeply clone an object.**
+
+```
+function deepClone(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+```
+
+*Follow-up:* Why is this method not suitable for functions or circular references?
+
+**Answer:** JSON can't serialize functions or handle circular structures, causing errors or loss of data.
+
+---
+
+### React
+
+**Q4. Create a reusable input component that validates email.**
+
+```
+function EmailInput({ value, onChange }) {
+  const [error, setError] = useState('');
+  const validate = (val) => /^[^@]+@[^.]+\..+/.test(val);
+
+  const handleChange = (e) => {
+    const val = e.target.value;
+    onChange(val);
+    setError(validate(val) ? '' : 'Invalid email');
+  };
+
+  return <input value={value} onChange={handleChange} />;
+}
+```
+
+*Follow-up:* How would you make this component accessible?
+
+**Answer:** Add `aria-invalid`, `aria-describedby` and label the input using `<label for>` or `aria-label`.
+
+---
+
+**Q5. Implement a counter using `useReducer`.**
+
+```
+function reducer(state, action) {
+  switch (action.type) {
+    case 'inc': return state + 1;
+    case 'dec': return state - 1;
+    default: return state;
+  }
+}
+const [count, dispatch] = useReducer(reducer, 0);
+```
+
+*Follow-up:* Why use `useReducer` over `useState`?
+
+**Answer:** `useReducer` is better for complex state logic or when state depends on previous values.
+
+---
+
+**Q6. Create a custom hook to fetch data.**
+
+```
+function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    fetch(url).then(res => res.json()).then(setData).finally(() => setLoading(false));
+  }, [url]);
+  return { data, loading };
+}
+```
+
+*Follow-up:* How would you add error handling?
+
+**Answer:** Use a `catch` block and an `error` state:
+
+```
+.catch(err => setError(err));
+```
+
+---
+
+### Next.js
+
+**Q7. Create a Next.js page with SSR using `getServerSideProps`.**
+
+```
+export async function getServerSideProps() {
+  const res = await fetch('https://api.example.com');
+  const data = await res.json();
+  return { props: { data } };
+}
+```
+
+*Follow-up:* When would you prefer SSR over SSG?
+
+**Answer:** Use SSR when data must be up-to-date on every request (e.g., user-specific dashboards).
+
+---
+
+**Q8. Implement dynamic route `/product/[id].js`.**
+
+```
+const Product = ({ id }) => <div>Product: {id}</div>;
+export async function getStaticPaths() {
+  return { paths: [{ params: { id: '1' } }], fallback: false };
+}
+export async function getStaticProps({ params }) {
+  return { props: { id: params.id } };
+}
+```
+
+*Follow-up:* How does fallback: true/false/blocking affect routing?
+
+**Answer:**
+
+- `false`: Only pre-rendered paths are allowed.
+- `true`: Shows a loading state until page is generated.
+- `blocking`: Waits for the page to build before serving.
+
+---
+
+**Q9. Implement middleware for authentication in Next.js.**
+
+```
+export function middleware(req) {
+  const isAuth = req.cookies.token;
+  if (!isAuth) return NextResponse.redirect('/login');
+}
+```
+
+*Follow-up:* How is this different from checking auth in `getServerSideProps`?
+
+**Answer:** Middleware runs before rendering and doesn't access page props—it's used for redirects/rewrites.
+
+---
+
+### GraphQL
+
+**Q10. Write a GraphQL query to get a user with posts.**
+
+```graphql
+query {
+  user(id: 1) {
+    id
+    name
+    posts {
+      title
+    }
+  }
+}
+```
+
+*Follow-up:* How does this reduce over-fetching compared to REST?
+
+**Answer:** It fetches only necessary fields, avoiding full object fetches like in REST.
+
+---
+
+**Q11. Create a mutation to update user info.**
+
+```graphql
+mutation {
+  updateUser(id: 1, input: { name: "New Name" }) {
+    id
+    name
+  }
+}
+```
+
+*Follow-up:* How do you validate user input in a resolver?
+
+**Answer:** Manually validate in resolver or use libraries like Joi/Yup before updating data.
+
+---
+
+**Q12. Implement cursor-based pagination in a query.**
+
+```graphql
+type Query {
+  users(cursor: String, limit: Int): UserConnection
+}
+```
+
+*Follow-up:* Why is cursor-based pagination more reliable than offset-based?
+
+**Answer:** Cursor pagination avoids inconsistencies when data is added/removed during navigation.
+
+---
+
+**Q13. Set up Apollo Client in React to fetch users.**
+
+```
+import { useQuery, gql } from '@apollo/client';
+const USERS_QUERY = gql`{ users { id name } }`;
+const { data } = useQuery(USERS_QUERY);
+```
+
+*Follow-up:* How do you handle loading and errors in Apollo?
+
+**Answer:** Apollo returns `loading` and `error` from `useQuery` which can be used for conditional rendering.
+
+---
+
+### HTML/CSS
+
+**Q14. Build a responsive 2-column layout using CSS Grid.**
+
+```css
+display: grid;
+grid-template-columns: 1fr 2fr;
+gap: 1rem;
+```
+
+*Follow-up:* How would this adapt on mobile?
+
+**Answer:** Use media queries to switch to 1-column layout:
+
+```css
+@media (max-width: 768px) {
+  grid-template-columns: 1fr;
+}
+```
+
+---
+
+**Q15. Create an accessible button with ARIA attributes.**
+
+```html
+<button aria-label="Close modal">✖</button>
+```
+
+*Follow-up:* When are ARIA labels necessary?
+
+**Answer:** When there's no visible text or icon meaning is not clear to screen readers.
+
+---
+
+**Q16. Implement a sticky navbar.**
+
+```css
+nav {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+}
+```
+
+*Follow-up:* How is `sticky` different from `fixed`?
+
+**Answer:** `sticky` sticks within the scroll container; `fixed` sticks to viewport regardless.
+
+---
+
+**Q17. Create a tooltip using only HTML/CSS.**
+
+```html
+<span class="tooltip">Hover me<span class="tooltiptext">Tooltip</span></span>
+```
+
+```css
+.tooltiptext { visibility: hidden; position: absolute; }
+.tooltip:hover .tooltiptext { visibility: visible; }
+```
+
+*Follow-up:* How would you make this accessible via keyboard?
+
+**Answer:** Add `tabindex="0"` and show tooltip on `:focus` in CSS.
+
+---
+
+**Q18. Center a div vertically and horizontally.**
+
+```css
+display: flex;
+justify-content: center;
+align-items: center;
+```
+
+*Follow-up:* Why is Flexbox preferred over margins for centering?
+
+**Answer:** Flexbox provides reliable vertical/horizontal centering without calculating sizes.
+
+---
+
+**Q19. Add a transition effect to a button hover.**
+
+```css
+button {
+  transition: background 0.3s ease;
+}
+button:hover {
+  background: blue;
+}
+```
+
+*Follow-up:* What can you animate with CSS transitions?
+
+**Answer:** You can animate properties like color, transform, opacity, background, etc.
+
+---
+
+**Q20. Create a custom checkbox style.**
+
+```css
+input[type="checkbox"] {
+  appearance: none;
+  width: 20px; height: 20px;
+  background: #eee;
+}
+input[type="checkbox"]:checked {
+  background: green;
+}
+```
+
+*Follow-up:* How would you ensure keyboard accessibility?
+
+**Answer:** Ensure the checkbox is a real input element with `label` and test with Tab/Enter/Space keys.
+
+---
+
+Would you like to add practical tasks for testing, TypeScript, or CI/CD setup next?
