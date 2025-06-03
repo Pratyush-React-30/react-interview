@@ -1,0 +1,352 @@
+## ⚡ Next.js Interview Questions & Answers
+
+### **Q1. What is the difference between SSR, SSG, ISR, and CSR in Next.js?**
+
+**Answer:**
+
+- **SSR (Server-Side Rendering)**: Page is rendered on each request at runtime (`getServerSideProps`).
+- **SSG (Static Site Generation)**: Page is built at build time and served as static HTML (`getStaticProps`).
+- **ISR (Incremental Static Regeneration)**: Static pages updated in the background (`revalidate`).
+- **CSR (Client-Side Rendering)**: Data is fetched on the client via hooks (e.g., `useEffect`).
+
+**Follow-up Q:** *When would you choose ISR over SSR?*
+
+**A:** ISR is ideal when you want the performance of static pages with occasional updates (e.g., blog pages or product listings that update every few minutes).
+
+---
+
+### **Q2. What are `getStaticProps`, `getServerSideProps`, and `getInitialProps`?**
+
+**Answer:**
+
+- `getStaticProps`: Generates static pages at build time.
+- `getServerSideProps`: Runs on every request.
+- `getInitialProps`: Works with both SSR and client-side, but not recommended in modern apps.
+
+**Follow-up Q:** *Why is `getInitialProps` discouraged?*
+
+**A:** It disables automatic static optimization and complicates the rendering strategy.
+
+---
+
+### **Q3. How does Next.js handle routing?**
+
+**Answer:**
+
+- File-based routing: each `.js` file in the `pages` directory becomes a route.
+- Dynamic routing: use `[param].js` for dynamic segments.
+
+```
+js
+CopyEdit
+// pages/product/[id].js
+import { useRouter } from 'next/router';
+
+```
+
+**Follow-up Q:** *How do catch-all routes work in Next.js?*
+
+**A:** Use `[...slug].js` to match `/a`, `/a/b`, etc. Use `[[...slug]].js` for optional catch-all routes.
+
+---
+
+### **Q4. How is API routing handled in Next.js?**
+
+**Answer:**
+
+- Place API routes inside `pages/api/`. Each file becomes an endpoint.
+
+```
+js
+CopyEdit
+// pages/api/hello.js
+export default function handler(req, res) {
+  res.status(200).json({ name: 'John Doe' });
+}
+
+```
+
+**Follow-up Q:** *Are Next.js API routes suitable for production APIs?*
+
+**A:** They’re fine for lightweight APIs, but not for high-throughput or complex APIs. Use a backend or serverless platform for scalability.
+
+---
+
+### **Q5. How does image optimization work in Next.js?**
+
+**Answer:**
+
+- Use the built-in `<Image>` component.
+- Supports automatic lazy loading, responsive sizing, and CDN-based optimization.
+
+**Follow-up Q:** *What are the trade-offs of using Next.js Image over plain `<img>`?*
+
+**A:** It offers performance benefits, but increases bundle size slightly and requires domain configuration for external images.
+
+---
+
+### **Q6. What is middleware in Next.js 13+ and how is it used?**
+
+**Answer:**
+
+Middleware runs before a request is completed, useful for auth, redirects, and rewrites. Place `middleware.js` in the root or route-specific folders.
+
+```
+js
+CopyEdit
+// middleware.js
+export function middleware(req) {
+  const isLoggedIn = checkAuth(req);
+  if (!isLoggedIn) return NextResponse.redirect('/login');
+}
+
+```
+
+**Follow-up Q:** *How is middleware different from `getServerSideProps`?*
+
+**A:** Middleware runs earlier in the request lifecycle (before rendering), doesn’t allow HTML rendering or data fetching.
+
+---
+
+### **Q7. How does Next.js support TypeScript?**
+
+**Answer:**
+
+- Auto-detects `tsconfig.json`
+- Provides type-safe APIs for `getStaticProps`, `getServerSideProps`, etc.
+
+**Follow-up Q:** *What are common TypeScript patterns in Next.js?*
+
+**A:** Use `InferGetStaticPropsType<>`, custom types for pages/components, and generic API response types.
+
+---
+
+### **Q8. What are Layouts in Next.js and how are they implemented?**
+
+**Answer:**
+
+- In traditional apps, layouts wrap the content.
+- In App Router (`app/`), you use `layout.tsx` files to define persistent layout components.
+
+**Follow-up Q:** *How does the new App Router’s nested layouts differ from Pages Router?*
+
+**A:** App Router enables nested, persistent layouts and parallel routes, whereas Pages Router requires manual layout composition.
+
+---
+
+### **Q9. How does Next.js handle environment variables?**
+
+**Answer:**
+
+- `.env.local`, `.env.production`, etc.
+- Prefix with `NEXT_PUBLIC_` to expose to the client.
+
+**Follow-up Q:** *Why can't you access server-only env vars in the browser?*
+
+**A:** For security — only `NEXT_PUBLIC_` vars are exposed to client-side JavaScript.
+
+---
+
+### **Q10. How does Next.js handle SEO and metadata?**
+
+**Answer:**
+
+- Custom `<Head>` component from `next/head`
+- App Router uses `metadata` and `generateMetadata()` per route
+
+**Follow-up Q:** *How does SSR in Next.js improve SEO?*
+
+**A:** Content is rendered on the server, so search engines can crawl it even if JavaScript is disabled.
+
+---
+
+Would you like:
+
+- Follow-up with **Next.js App Router & Server Components questions**?
+- A combined **PDF or Notion export** with React + Next.js + JS questions?
+- An interview **scorecard template** with these questions?
+
+### You said:
+
+give me 10 more
+
+### ChatGPT said:
+
+Here are **10 more advanced Next.js interview questions** with **detailed answers**, **follow-up questions**, and **follow-up answers**, ideal for candidates with 3–8 years of frontend experience.
+
+---
+
+### **Q11. What are server components in Next.js?**
+
+**Answer:**
+
+Server components render on the server and send HTML to the client. They don’t include client-side JavaScript, which improves performance.
+
+**Follow-up Q:** *How do server components improve performance?*
+
+**A:** They reduce JavaScript bundle size and allow heavy computations (e.g., DB queries) on the server, not in the browser.
+
+---
+
+### **Q12. What is the difference between the `pages/` directory and the new `app/` directory in Next.js 13+?**
+
+**Answer:**
+
+- `pages/`: Uses file-based routing, SSR/SSG via data-fetching functions.
+- `app/`: Supports nested layouts, server components, streaming, and async/await syntax for rendering.
+
+**Follow-up Q:** *Can both routers coexist in one project?*
+
+**A:** Yes, during migration. Next.js will prioritize `app/` over `pages/` for overlapping routes.
+
+---
+
+### **Q13. What are parallel routes in Next.js 13 App Router?**
+
+**Answer:**
+
+Parallel routes let you render multiple routes in parallel in different UI slots using the `@` convention in the `app` directory.
+
+**Follow-up Q:** *When would you use parallel routes?*
+
+**A:** For tabs, modals, or sidebars that load independently while keeping the main layout intact.
+
+---
+
+### **Q14. How does dynamic metadata work in the App Router?**
+
+**Answer:**
+
+Use the `generateMetadata` function inside a route segment to dynamically set title, description, and Open Graph tags.
+
+```tsx
+tsx
+CopyEdit
+export async function generateMetadata({ params }) {
+  const data = await fetchPost(params.slug);
+  return {
+    title: data.title,
+    description: data.description,
+  };
+}
+
+```
+
+**Follow-up Q:** *Is `generateMetadata` run on the server or client?*
+
+**A:** Always server-side during rendering, never in the client bundle.
+
+---
+
+### **Q15. How do loading UI and streaming work in Next.js 13+?**
+
+**Answer:**
+
+Next.js streams content and shows intermediate UI using `loading.tsx` while components load.
+
+**Follow-up Q:** *What is React’s `Suspense` and how does it relate to this?*
+
+**A:** `Suspense` allows you to wait for a part of the UI to load before showing it. Next.js wraps routes in Suspense boundaries for streaming.
+
+---
+
+### **Q16. What is the purpose of `not-found.tsx` and `error.tsx` in the App Router?**
+
+**Answer:**
+
+- `not-found.tsx`: Renders for 404s using `notFound()`
+- `error.tsx`: Renders for unexpected runtime errors.
+
+**Follow-up Q:** *How is this different from `404.js` and `_error.js` in the Pages Router?*
+
+**A:** The App Router uses co-located error boundaries per route, enabling modular error handling.
+
+---
+
+### **Q17. How do you handle authentication in Next.js?**
+
+**Answer:**
+
+Options include:
+
+- Server-side: Middleware + `getServerSideProps`
+- Client-side: Cookies/token + React Context
+- Full-featured: `next-auth`, `Auth.js`
+
+**Follow-up Q:** *What are the benefits of using `next-auth`?*
+
+**A:** Built-in OAuth, session handling, JWT, and adapters for various databases — saves custom setup effort.
+
+---
+
+### **Q18. How does static file serving work in Next.js?**
+
+**Answer:**
+
+Files in the `/public` folder are served at the root URL.
+
+```bash
+bash
+CopyEdit
+/public/images/logo.png → https://yourdomain.com/images/logo.png
+
+```
+
+**Follow-up Q:** *Can you import public assets directly in code?*
+
+**A:** No — use them via URLs in `<img>` or `<Image>`. For imported assets (like SVGs as components), use the `import` statement with a loader.
+
+---
+
+### **Q19. How does Next.js handle redirects and rewrites?**
+
+**Answer:**
+
+Define them in `next.config.js`:
+
+```
+js
+CopyEdit
+module.exports = {
+  async redirects() {
+    return [{ source: '/old', destination: '/new', permanent: true }];
+  },
+  async rewrites() {
+    return [{ source: '/about', destination: '/info' }];
+  },
+};
+
+```
+
+**Follow-up Q:** *What’s the difference between a redirect and a rewrite?*
+
+**A:**
+
+- **Redirect**: Changes the URL in the browser (301/302).
+- **Rewrite**: Keeps the URL the same but serves content from a different path.
+
+---
+
+### **Q20. How do you optimize performance in a large Next.js app?**
+
+**Answer:**
+
+- Use SSR/ISR selectively
+- Use `<Image>` for media
+- Apply dynamic imports and `React.lazy`
+- Use CDN and caching headers
+- Minimize bundle size with `next/bundle-analyzer`
+
+**Follow-up Q:** *How do you analyze your bundle in Next.js?*
+
+**A:**
+
+Install and use `@next/bundle-analyzer`:
+
+```
+js
+CopyEdit
+const withBundleAnalyzer = require('@next/bundle-analyzer')({ enabled: true });
+module.exports = withBundleAnalyzer({});
+
+```
