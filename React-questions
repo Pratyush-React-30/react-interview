@@ -1,0 +1,400 @@
+## React Interview Questions for Frontend Developers (3–8 Years)
+
+### Part 1: Core Concepts
+
+**Q1. What is the Virtual DOM and how does React use it?**
+
+- The Virtual DOM is an in-memory representation of the real DOM. React updates it first, then computes the difference (diffing) and applies minimal changes to the real DOM.
+    
+    *Follow-up:* How does React's reconciliation algorithm work?
+    
+
+---
+
+**Q2. Explain the lifecycle methods of class components.**
+
+- `componentDidMount`, `componentDidUpdate`, `componentWillUnmount`, `shouldComponentUpdate`, etc.
+    
+    *Follow-up:* How do you achieve similar logic in functional components?
+    
+
+---
+
+**Q3. What are React Hooks? Name a few commonly used hooks.**
+
+- Hooks allow using state and other features in functional components.
+    - `useState`, `useEffect`, `useRef`, `useMemo`, `useCallback`
+        
+        *Follow-up:* What rules must hooks follow?
+        
+
+---
+
+**Q4. Difference between controlled and uncontrolled components?**
+
+- **Controlled:** State is managed by React
+- **Uncontrolled:** DOM manages its own state
+    
+    *Follow-up:* When would you prefer uncontrolled components?
+    
+
+---
+
+**Q5. How does React handle form validations?**
+
+- Manually via state or using libraries like Formik, React Hook Form.
+    
+    *Follow-up:* What are the pros and cons of each library?
+    
+
+---
+
+### Part 2: Optimization & Performance
+
+**Q6. How does React prevent unnecessary re-renders?**
+
+- Memoization (`React.memo`, `useMemo`, `useCallback`), `shouldComponentUpdate`, `PureComponent`
+    
+    *Follow-up:* What's the difference between `useMemo` and `useCallback`?
+    
+
+---
+
+**Q7. What is the purpose of keys in React lists?**
+
+- Keys help React identify which items have changed, added, or removed.
+    
+    *Follow-up:* Why shouldn't you use array indices as keys?
+    
+
+---
+
+**Q8. What is React Suspense? How is it used?**
+
+- Allows components to wait for something (like lazy-loaded components or data) before rendering.
+
+```
+const LazyComp = React.lazy(() => import('./Comp'));
+
+```
+
+*Follow-up:* How do you handle errors in Suspense?
+
+---
+
+**Q9. How does Context API work in React?**
+
+- Enables prop drilling avoidance by providing global state.
+    
+    *Follow-up:* When should you use Context vs Redux or Zustand?
+    
+
+---
+
+**Q10. How do you manage side effects in React?**
+
+- Using `useEffect()` to run logic after render.
+    
+    *Follow-up:* What happens if you omit the dependency array?
+    
+
+---
+
+### Part 3: Advanced Concepts
+
+**Q11. How do you implement code splitting in React?**
+
+- `React.lazy`, `Suspense`, dynamic imports
+    
+    *Follow-up:* What’s the difference between lazy loading and preloading?
+    
+
+---
+
+**Q12. How do you test React components?**
+
+- Libraries: `Jest`, `React Testing Library`, `Enzyme`
+    
+    *Follow-up:* What’s the difference between shallow and full rendering?
+    
+
+---
+
+**Q13. What is the difference between `useRef` and `createRef`?**
+
+- `useRef`: Persistent between renders in function components
+- `createRef`: New ref each render (used in class components)
+    
+    *Follow-up:* Can `useRef` trigger re-renders?
+    
+
+---
+
+**Q14. Explain React Fiber architecture.**
+
+- A reimplementation of React’s core algorithm for rendering. It allows interruptible rendering, prioritization, and batching.
+    
+    *Follow-up:* How does this relate to concurrent rendering?
+    
+
+---
+
+**Q15. What are render props and higher-order components (HOC)?**
+
+- **Render Props:** Component that uses a function as a child
+- **HOC:** Function that takes a component and returns a new one
+    
+    *Follow-up:* When would you use custom hooks instead?
+    
+
+---
+
+### Part 4: Miscellaneous & Advanced Use Cases
+
+**Q16. What is reconciliation in React?**
+
+- The process of comparing old and new virtual DOMs to update the UI efficiently.
+    
+    *Follow-up:* How does React decide whether to reuse or re-create a component?
+    
+
+---
+
+**Q17. What are portals in React?**
+
+- Portals allow rendering children into a DOM node outside the parent component's hierarchy.
+
+```
+ReactDOM.createPortal(child, domNode);
+
+```
+
+*Follow-up:* When would you use portals?
+
+---
+
+**Q18. How does error handling work in React?**
+
+- Using Error Boundaries: class components with `componentDidCatch` and `getDerivedStateFromError`
+    
+    *Follow-up:* Can functional components catch errors?
+    
+
+---
+
+**Q19. What is hydration in React?**
+
+- The process where React attaches event listeners to SSR-generated HTML.
+    
+    *Follow-up:* What are common pitfalls in hydration?
+    
+
+---
+
+**Q20. How do you handle accessibility (a11y) in React?**
+
+- Use semantic HTML, ARIA roles, labels, keyboard navigation.
+    
+    *Follow-up:* What are some React tools/libraries for accessibility?
+    
+
+---
+
+# **Answers to follow ups**
+
+**Q1. How does React's reconciliation algorithm work?**
+
+React’s reconciliation algorithm compares the new virtual DOM with the previous one (diffing). It uses heuristics:
+
+- Elements with the same key and type are updated.
+- Different types lead to re-creation of the subtree.
+- Keys help identify which items are added, removed, or reordered in lists.
+
+---
+
+### **Q2. How do you achieve similar logic in functional components?**
+
+You use **React Hooks**:
+
+- `componentDidMount` → `useEffect(() => { ... }, [])`
+- `componentDidUpdate` → `useEffect(() => { ... }, [dependencies])`
+- `componentWillUnmount` → return a cleanup function inside `useEffect`
+- `shouldComponentUpdate` → use `React.memo`, `useMemo`, or `useCallback`
+
+---
+
+### **Q3. What rules must hooks follow?**
+
+1. Only call hooks at the top level (not inside loops, conditions, or nested functions).
+2. Only call hooks from React functions (functional components or custom hooks).
+
+---
+
+### **Q4. When would you prefer uncontrolled components?**
+
+- When you need quick forms with minimal logic.
+- For third-party libraries managing their own input state.
+- For file inputs and simple DOM manipulation via `ref`.
+
+---
+
+### **Q5. What are the pros and cons of each library?**
+
+- **Formik:**
+    - ✅ Rich feature set
+    - ✅ Schema validation via Yup
+    - ❌ Heavier
+- **React Hook Form:**
+    - ✅ Lightweight, fast
+    - ✅ Minimal re-renders
+    - ❌ Learning curve for nested objects
+
+---
+
+### **Q6. What's the difference between `useMemo` and `useCallback`?**
+
+- `useMemo(fn, deps)` returns **a memoized value**.
+- `useCallback(fn, deps)` returns **a memoized function**.
+    
+    Use `useMemo` when the result is expensive to compute. Use `useCallback` when passing stable function references to child components.
+    
+
+---
+
+### **Q7. Why shouldn't you use array indices as keys?**
+
+- Index-based keys break React’s diffing when items are reordered or removed.
+- Can cause issues with state or input field mismatches.
+    
+    Use **stable and unique** keys like IDs.
+    
+
+---
+
+### **Q8. How do you handle errors in Suspense?**
+
+You use an **Error Boundary**:
+
+```tsx
+tsx
+CopyEdit
+<ErrorBoundary fallback={<div>Error loading</div>}>
+  <Suspense fallback={<div>Loading...</div>}>
+    <LazyComp />
+  </Suspense>
+</ErrorBoundary>
+
+```
+
+Functional components **cannot be Error Boundaries** directly.
+
+---
+
+### **Q9. When should you use Context vs Redux or Zustand?**
+
+- **Context**: Small, static or rarely changing global state (e.g., theme, locale).
+- **Redux/Zustand**: Large, dynamic, or frequently updated state, with debugging tools and middleware support.
+
+---
+
+### **Q10. What happens if you omit the dependency array?**
+
+The effect runs **after every render**, leading to:
+
+- Potential performance issues
+- Infinite loops if state is updated inside the effect
+
+---
+
+### **Q11. What’s the difference between lazy loading and preloading?**
+
+- **Lazy loading**: Load a component **only when needed**.
+- **Preloading**: Load a component **ahead of time**, often during idle time to reduce perceived wait.
+
+React example:
+
+```tsx
+tsx
+CopyEdit
+React.lazy(() => import('./Comp')); // lazy
+// Preload manually
+import('./Comp');
+
+```
+
+---
+
+### **Q12. What’s the difference between shallow and full rendering?**
+
+- **Shallow rendering** (Enzyme): Renders only one level deep—tests component in isolation.
+- **Full rendering** (`mount`): Renders child components too—used for integration tests.
+
+---
+
+### **Q13. Can `useRef` trigger re-renders?**
+
+No, updates to `useRef.current` **do not trigger** re-renders. It’s useful for persisting mutable values across renders without causing re-renders.
+
+---
+
+### **Q14. How does this relate to concurrent rendering?**
+
+React Fiber enables **interruption and prioritization** of rendering tasks, which is the foundation for **Concurrent Mode**, allowing React to:
+
+- Pause rendering
+- Reuse work
+- Prioritize urgent updates (like animations)
+
+---
+
+### **Q15. When would you use custom hooks instead?**
+
+- When reusing logic without altering component hierarchy.
+- Custom hooks provide **cleaner, more composable** logic compared to HOCs or Render Props.
+
+---
+
+### **Q16. How does React decide whether to reuse or re-create a component?**
+
+React reuses components if:
+
+- The element type and key **are the same**.
+- If different, the component is unmounted and a new one is mounted.
+
+---
+
+### **Q17. When would you use portals?**
+
+- For UI that breaks out of the parent hierarchy:
+    - Modals
+    - Tooltips
+    - Dropdowns
+        
+        These need to visually appear on top and not be affected by parent `overflow: hidden`.
+        
+
+---
+
+### **Q18. Can functional components catch errors?**
+
+No, only **class components** can define error boundaries.
+
+But you can wrap functional components with an error boundary HOC.
+
+---
+
+### **Q19. What are common pitfalls in hydration?**
+
+- Mismatch between server-rendered HTML and client render (e.g., dynamic content).
+- Using non-deterministic data (e.g., `Date.now()`) before hydration completes.
+- Avoid by ensuring SSR and client render are consistent.
+
+---
+
+### **Q20. What are some React tools/libraries for accessibility?**
+
+- **React Aria** by Adobe
+- **Reach UI**
+- **Radix UI**
+- ESLint plugins for a11y: `eslint-plugin-jsx-a11y`
+- Testing: `axe-core`, `jest-axe`, `testing-library`
