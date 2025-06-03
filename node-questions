@@ -1,0 +1,554 @@
+## **Beginner Level**
+
+### 1. **What is Node.js?**
+
+**Answer:**
+
+Node.js is a runtime environment that allows you to run JavaScript on the server side. It is built on Chrome’s V8 JavaScript engine and is used for building scalable network applications.
+
+**Follow-up:**
+
+**Q:** Why is Node.js considered non-blocking?
+
+**A:** Because it uses an event-driven architecture and non-blocking I/O operations, which means it doesn't wait for tasks like file reading or database access to complete before moving to the next operation.
+
+---
+
+### 2. **What is the difference between synchronous and asynchronous programming in Node.js?**
+
+**Answer:**
+
+- Synchronous: Tasks are executed one after another, blocking the event loop.
+- Asynchronous: Tasks are initiated but don’t wait for completion; callbacks or promises handle the result later.
+
+**Follow-up:**
+
+**Q:** How does asynchronous programming improve performance?
+
+**A:** It allows Node.js to handle multiple operations concurrently, increasing scalability and responsiveness without blocking the main thread.
+
+---
+
+### 3. **What is the use of `package.json` in Node.js?**
+
+**Answer:**
+
+`package.json` holds metadata about your Node project and manages dependencies, scripts, versioning, and configurations.
+
+**Follow-up:**
+
+**Q:** What is the difference between dependencies and devDependencies?
+
+**A:** `dependencies` are required for the application to run. `devDependencies` are only needed during development, like testing or build tools.
+
+---
+
+### 4. **What are CommonJS modules?**
+
+**Answer:**
+
+CommonJS is the default module system in Node.js, using `require()` and `module.exports` to import/export modules.
+
+**Follow-up:**
+
+**Q:** How do CommonJS modules differ from ES modules in Node.js?
+
+**A:** CommonJS is synchronous and used with `.js` files. ES modules use `import/export`, support `async`, and require `.mjs` or `"type": "module"` in `package.json`.
+
+---
+
+### 5. **How do you handle errors in Node.js?**
+
+**Answer:**
+
+Using:
+
+- `try/catch` blocks for synchronous code.
+- `.catch()` for promises.
+- Error-first callbacks (first parameter is an error).
+
+**Follow-up:**
+
+**Q:** What is an unhandled promise rejection?
+
+**A:** It occurs when a promise is rejected and there’s no `.catch()` to handle the error, which can crash the Node process in future versions.
+
+---
+
+## 🟡 **Intermediate Level**
+
+### 6. **What is the Event Loop in Node.js?**
+
+**Answer:**
+
+It’s a mechanism that handles asynchronous callbacks. Node.js uses a single-threaded event loop to manage multiple operations concurrently without blocking.
+
+**Follow-up:**
+
+**Q:** What are the phases of the Event Loop?
+
+**A:** Phases include:
+
+- Timers
+- Pending callbacks
+- Idle/prepare
+- Poll
+- Check
+- Close callbacks
+
+---
+
+### 7. **What is the difference between `process.nextTick()` and `setImmediate()`?**
+
+**Answer:**
+
+- `process.nextTick()` queues the callback to run immediately after the current operation.
+- `setImmediate()` queues the callback for the next iteration of the event loop.
+
+**Follow-up:**
+
+**Q:** Which one has higher priority?
+
+**A:** `process.nextTick()` has higher priority and executes before `setImmediate()`.
+
+---
+
+### 8. **How do streams work in Node.js?**
+
+**Answer:**
+
+Streams are abstract interfaces for working with streaming data. There are four types: Readable, Writable, Duplex, and Transform.
+
+**Follow-up:**
+
+**Q:** When would you use a stream over reading a file with `fs.readFile()`?
+
+**A:** When working with large files or real-time data to avoid loading the entire file into memory.
+
+---
+
+### 9. **What are buffers in Node.js?**
+
+**Answer:**
+
+Buffers handle raw binary data directly in memory, mostly used in file systems or TCP streams.
+
+**Follow-up:**
+
+**Q:** How are buffers different from strings in Node.js?
+
+**A:** Strings are for textual data (encoded), while buffers are for binary data.
+
+---
+
+### 10. **What is middleware in Express.js?**
+
+**Answer:**
+
+Middleware is a function that has access to the `req`, `res`, and `next()` function. It can modify the request/response or terminate the request-response cycle.
+
+**Follow-up:**
+
+**Q:** How do you create error-handling middleware?
+
+**A:** By defining a function with four arguments: `(err, req, res, next)`.
+
+---
+
+Would you like a downloadable Notion-compatible version of this list or continue with advanced topics next?
+
+### You said:
+
+give me 10 beginner and 10 Intermediate level
+
+### ChatGPT said:
+
+Here’s a structured set of **Node.js interview questions** with **answers and follow-up Q&A**, divided into:
+
+- ✅ **10 Beginner-Level Questions**
+- 🔶 **10 Intermediate-Level Questions**
+
+---
+
+## ✅ **Beginner-Level Node.js Interview Questions**
+
+---
+
+### 1. **What is Node.js?**
+
+**Answer:**
+
+Node.js is an open-source, cross-platform runtime environment that runs JavaScript on the server-side, powered by the V8 engine.
+
+**Follow-up:**
+
+**Q:** What makes Node.js fast?
+
+**A:** Its non-blocking I/O and event-driven architecture allow it to handle many operations concurrently.
+
+---
+
+### 2. **How is Node.js different from JavaScript in the browser?**
+
+**Answer:**
+
+Browser JS runs in a sandbox and interacts with the DOM, while Node.js interacts with the file system, network, and OS via its APIs.
+
+**Follow-up:**
+
+**Q:** Can you use `window` in Node.js?
+
+**A:** No, because `window` is part of the browser’s global scope, not Node’s.
+
+---
+
+### 3. **What is npm?**
+
+**Answer:**
+
+npm (Node Package Manager) is the default package manager for Node.js used to install, publish, and manage dependencies.
+
+**Follow-up:**
+
+**Q:** What is the difference between `npm install` and `npm install --save-dev`?
+
+**A:** `--save-dev` installs the package as a development dependency.
+
+---
+
+### 4. **How do you export and import modules in Node.js?**
+
+**Answer:**
+
+Using CommonJS:
+
+```
+js
+CopyEdit
+// Export
+module.exports = function() {}
+
+// Import
+const func = require('./myModule');
+
+```
+
+**Follow-up:**
+
+**Q:** What happens if you `require()` the same module multiple times?
+
+**A:** It’s cached after the first call, so subsequent `require` calls return the same instance.
+
+---
+
+### 5. **What is the purpose of `package.json`?**
+
+**Answer:**
+
+It defines project metadata, dependencies, scripts, and versioning.
+
+**Follow-up:**
+
+**Q:** What command initializes a new `package.json` file?
+
+**A:** `npm init` or `npm init -y`
+
+---
+
+### 6. **How do you read a file in Node.js?**
+
+**Answer:**
+
+```
+js
+CopyEdit
+const fs = require('fs');
+fs.readFile('file.txt', 'utf8', (err, data) => {
+  if (err) throw err;
+  console.log(data);
+});
+
+```
+
+**Follow-up:**
+
+**Q:** What module is used for file operations?
+
+**A:** The `fs` (File System) module.
+
+---
+
+### 7. **What are callbacks in Node.js?**
+
+**Answer:**
+
+A callback is a function passed as an argument to another function, executed later.
+
+**Follow-up:**
+
+**Q:** What is callback hell?
+
+**A:** It’s nested callback functions that make code hard to read and maintain.
+
+---
+
+### 8. **What is the `__dirname` variable?**
+
+**Answer:**
+
+It’s a global variable that contains the directory path of the current module.
+
+**Follow-up:**
+
+**Q:** How is `__dirname` different from `process.cwd()`?
+
+**A:** `__dirname` is the directory of the current file, `process.cwd()` is the current working directory of the process.
+
+---
+
+### 9. **How do you create a simple server in Node.js?**
+
+**Answer:**
+
+```
+js
+CopyEdit
+const http = require('http');
+http.createServer((req, res) => {
+  res.write('Hello World');
+  res.end();
+}).listen(3000);
+
+```
+
+**Follow-up:**
+
+**Q:** Which module is used to create servers?
+
+**A:** The built-in `http` module.
+
+---
+
+### 10. **What are environment variables in Node.js?**
+
+**Answer:**
+
+They are global variables used to store config like API keys. Accessed via `process.env`.
+
+**Follow-up:**
+
+**Q:** How do you set environment variables?
+
+**A:** Using `.env` files with `dotenv` or setting them inline before commands.
+
+---
+
+## 🔶 **Intermediate-Level Node.js Interview Questions**
+
+---
+
+### 1. **What is the Event Loop?**
+
+**Answer:**
+
+The Event Loop processes asynchronous callbacks in a single-threaded, non-blocking way.
+
+**Follow-up:**
+
+**Q:** Why is it important for Node.js performance?
+
+**A:** It allows Node to handle thousands of requests without blocking.
+
+---
+
+### 2. **What are streams in Node.js?**
+
+**Answer:**
+
+Streams are objects that enable reading/writing data piece-by-piece. Types: Readable, Writable, Duplex, Transform.
+
+**Follow-up:**
+
+**Q:** What are the benefits of using streams?
+
+**A:** Efficient memory usage and real-time data processing.
+
+---
+
+### 3. **What are buffers in Node.js?**
+
+**Answer:**
+
+Buffers store raw binary data, used especially when dealing with streams or file I/O.
+
+**Follow-up:**
+
+**Q:** How do you create a buffer of 10 bytes?
+
+**A:** `const buf = Buffer.alloc(10);`
+
+---
+
+### 4. **What is middleware in Express.js?**
+
+**Answer:**
+
+Middleware functions process requests before reaching the final route handler.
+
+**Follow-up:**
+
+**Q:** What does `next()` do in middleware?
+
+**A:** It passes control to the next middleware in the stack.
+
+---
+
+### 5. **What is the difference between `setTimeout`, `setImmediate`, and `process.nextTick`?**
+
+**Answer:**
+
+- `setTimeout`: Scheduled after a delay
+- `setImmediate`: Executes after I/O
+- `process.nextTick`: Executes before the next Event Loop tick
+
+**Follow-up:**
+
+**Q:** Which has the highest priority?
+
+**A:** `process.nextTick`
+
+---
+
+### 6. **What is cluster module in Node.js?**
+
+**Answer:**
+
+Cluster allows Node to spawn child processes that share the same server port, enabling multi-core scaling.
+
+**Follow-up:**
+
+**Q:** When should you use clustering?
+
+**A:** For improving concurrency and performance in CPU-intensive apps.
+
+---
+
+### 7. **How does error handling work in async/await?**
+
+**Answer:**
+
+```
+js
+CopyEdit
+try {
+  const result = await someAsyncFunc();
+} catch (error) {
+  console.error(error);
+}
+
+```
+
+**Follow-up:**
+
+**Q:** What if you forget `await` inside `try/catch`?
+
+**A:** The catch block won’t handle the error because the promise hasn't been awaited.
+
+---
+
+### 8. **What are Promises in Node.js?**
+
+**Answer:**
+
+A Promise represents the eventual completion or failure of an asynchronous operation.
+
+**Follow-up:**
+
+**Q:** How are promises better than callbacks?
+
+**A:** They provide better readability and error handling through chaining and `catch`.
+
+---
+
+### 9. **What are child processes in Node.js?**
+
+**Answer:**
+
+Child processes enable execution of shell commands or external programs using `child_process`.
+
+**Follow-up:**
+
+**Q:** What are the methods to create child processes?
+
+**A:** `spawn()`, `exec()`, `fork()`, and `execFile()`
+
+---
+
+### 10. **What is the role of `async_hooks` module?**
+
+**Answer:**
+
+`async_hooks` provides an API to track asynchronous resources and operations.
+
+**Follow-up:**
+
+**Q:** Is `async_hooks` suitable for production monitoring?
+
+**A:** It's powerful but can be complex and performance-heavy; often used for debugging or APM tools.
+
+---
+
+Would you like these compiled into a downloadable format (PDF/Notion)? Or should I proceed with **advanced-level** questions next?
+
+Tools
+
+ChatGPT can make mistakes. Check important info. See Cookie Preferences.
+
+Advanced Level Node.js Interview Questions
+
+1. What is the difference between spawn, exec, and fork in child_process?
+Answer: • `spawn`: Used for large data; streams output.
+• `exec`: Buffers output; better for smaller tasks.
+• `fork`: Specialized spawn that creates a new Node.js instance and communicates via messaging.
+Follow-up: When would you use `fork()` over `spawn()`?
+Answer: `fork()` is ideal when you want to create worker processes that run Node.js code and communicate with the parent via messages.
+2. How does Node.js handle concurrency with a single thread?
+Answer: Node.js uses an event loop and asynchronous I/O to simulate concurrency by offloading operations to the system kernel or worker threads (via libuv).
+Follow-up: Can Node.js be truly concurrent?
+Answer: Not in the traditional multi-threaded sense, but it achieves high scalability using non-blocking operations and the event loop.
+3. What is libuv and what role does it play in Node.js?
+Answer: libuv is a C library that abstracts asynchronous I/O operations. Node.js uses it for handling file system, DNS, network, and child processes.
+Follow-up: Why can't Node.js use native threads for all tasks?
+Answer: Node.js design emphasizes single-threaded, non-blocking I/O. Threads add complexity and potential race conditions.
+4. What is a memory leak in Node.js and how can you detect it?
+Answer: A memory leak is when memory is not released after it's no longer needed. It can be detected using tools like Chrome DevTools, `heapdump`, or `clinic.js`.
+Follow-up: What are common causes of memory leaks?
+Answer: Uncleared timers, event listeners, global variables, or closures holding references to unused objects.
+5. How do you handle CPU-intensive tasks in Node.js?
+Answer: Offload to background workers using the `worker_threads` module or move to a separate service.
+Follow-up: Why not run CPU-heavy tasks on the main thread?
+Answer: They block the event loop, reducing performance for all other incoming requests.
+6. What is the purpose of process.hrtime()?
+Answer: It's used to measure high-resolution real-time in nanoseconds, often for benchmarking.
+Follow-up: How is it better than `Date.now()`?
+Answer: `hrtime()` offers better precision and is unaffected by system clock changes.
+7. How does garbage collection work in Node.js?
+Answer: Node.js relies on the V8 garbage collector, which automatically deallocates memory using generational GC strategies.
+Follow-up: Can you manually trigger garbage collection?
+Answer: Yes, with `-expose-gc` flag and calling `global.gc()`, mostly for testing purposes.
+8. What are async iterators and how are they used?
+Answer: Async iterators allow consumption of asynchronous data using `for await...of`. Used with streams or paginated API data.
+Follow-up: How are async iterators different from Promises?
+Answer: Async iterators yield multiple async values over time, whereas a Promise resolves once.
+9. What are WeakMap and WeakSet in Node.js?
+Answer: They store weakly-held objects, allowing garbage collection if there are no other references.
+Follow-up: Why use WeakMap over Map?
+Answer: For cases where keys are objects and you want automatic cleanup when those objects are no longer used.
+10. How can you improve Node.js performance for production apps?
+Answer: • Use clustering or load balancing
+• Optimize database queries
+• Avoid blocking code
+• Use caching (Redis)
+• Monitor using PM2, New Relic, etc.
+Follow-up: How does PM2 help?
+Answer: PM2 is a process manager that provides load balancing, logging, monitoring, and zero-downtime restarts.
