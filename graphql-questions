@@ -1,0 +1,369 @@
+## ⚙️ GraphQL Interview Questions & Answers
+
+### **Q1. What is GraphQL and how is it different from REST?**
+
+**Answer:**
+
+GraphQL is a query language for APIs that lets clients request only the data they need. Unlike REST, which has fixed endpoints, GraphQL exposes a single endpoint and uses queries to fetch data flexibly.
+
+**Follow-up Q:** *Can GraphQL completely replace REST?*
+
+**A:** Not always. REST is better for simple CRUD services or file transfers. GraphQL is better for complex, nested data or when bandwidth is limited (mobile apps).
+
+---
+
+### **Q2. What are queries, mutations, and subscriptions in GraphQL?**
+
+**Answer:**
+
+- **Query**: Fetches data (read)
+- **Mutation**: Modifies data (write/update/delete)
+- **Subscription**: Enables real-time updates via WebSocket
+
+**Follow-up Q:** *How does GraphQL handle real-time updates?*
+
+**A:** Through subscriptions over WebSocket (e.g., Apollo uses `graphql-ws` or `subscriptions-transport-ws` protocol).
+
+---
+
+### **Q3. What is a GraphQL schema and what does it define?**
+
+**Answer:**
+
+A schema defines the types, queries, mutations, and subscriptions that the GraphQL API supports.
+
+```graphql
+graphql
+CopyEdit
+type Query {
+  getUser(id: ID!): User
+}
+
+```
+
+**Follow-up Q:** *Can you define relationships between types in GraphQL?*
+
+**A:** Yes, via nested fields. For example, a `Post` type can have a `comments: [Comment]` field that links types.
+
+---
+
+### **Q4. What are resolvers in GraphQL?**
+
+**Answer:**
+
+Resolvers are functions that return data for a field in the schema. They connect the schema to the underlying data source (e.g., database or API).
+
+```
+js
+CopyEdit
+const resolvers = {
+  Query: {
+    getUser: (_, { id }) => db.users.findById(id),
+  },
+};
+
+```
+
+**Follow-up Q:** *What happens if a resolver isn't defined for a field?*
+
+**A:** If a field is a scalar and its parent already has that field, GraphQL auto-resolves it. Otherwise, it returns `null`.
+
+---
+
+### **Q5. How does Apollo Client work in a frontend React/Next.js app?**
+
+**Answer:**
+
+Apollo Client is a state management library for GraphQL. It handles query execution, caching, and error handling.
+
+```
+js
+CopyEdit
+import { useQuery, gql } from '@apollo/client';
+
+const GET_USER = gql`{ user(id: 1) { name } }`;
+
+const { data, loading, error } = useQuery(GET_USER);
+
+```
+
+**Follow-up Q:** *What happens when Apollo's cache and server data are out of sync?*
+
+**A:** You can bypass or update the cache using options like `fetchPolicy: 'network-only'` or `refetch`.
+
+---
+
+### **Q6. What is schema stitching vs. federation?**
+
+**Answer:**
+
+- **Schema Stitching**: Merges multiple schemas into one at runtime.
+- **Federation**: Uses subgraphs managed by different teams/services, composed into a single graph by a gateway.
+
+**Follow-up Q:** *Which is more scalable in microservices architecture?*
+
+**A:** Federation is more scalable and maintainable for distributed teams and services.
+
+---
+
+### **Q7. How does GraphQL handle errors?**
+
+**Answer:**
+
+GraphQL returns partial data and a separate `errors` array in the response.
+
+```json
+json
+CopyEdit
+{
+  "data": { "user": null },
+  "errors": [{ "message": "User not found" }]
+}
+
+```
+
+**Follow-up Q:** *Can you return custom error codes in GraphQL?*
+
+**A:** Yes, you can extend error responses with custom `extensions` fields.
+
+---
+
+### **Q8. What are fragments in GraphQL and when should you use them?**
+
+**Answer:**
+
+Fragments allow you to reuse common field sets across queries.
+
+```graphql
+graphql
+CopyEdit
+fragment UserFields on User {
+  id
+  name
+}
+
+query {
+  user(id: 1) {
+    ...UserFields
+  }
+}
+
+```
+
+**Follow-up Q:** *Can fragments be nested?*
+
+**A:** Yes. You can reuse fragments inside other fragments for better modularity.
+
+---
+
+### **Q9. What is the N+1 problem in GraphQL and how do you solve it?**
+
+**Answer:**
+
+It occurs when fetching nested fields leads to repeated DB calls (1 per parent record).
+
+**Solution:** Use **DataLoader** to batch and cache DB calls within a request lifecycle.
+
+**Follow-up Q:** *Where should DataLoader be initialized?*
+
+**A:** In the context of each request to prevent cross-request caching and leakage.
+
+---
+
+### **Q10. How do you secure a GraphQL API?**
+
+**Answer:**
+
+- Use authentication (JWT/session) and enforce it in context
+- Implement role-based access control at the resolver level
+- Limit query depth/complexity to prevent abuse
+
+**Follow-up Q:** *How do you prevent malicious deep/nested queries?*
+
+**A:** Use `graphql-depth-limit` or `graphql-query-complexity` to restrict maximum depth or complexity.
+
+---
+
+---
+
+## 🔄 GraphQL with Apollo Server, Directives & Pagination
+
+### **Q11. How does Apollo Server integrate with Express or Next.js?**
+
+**Answer:**
+
+Apollo Server can be used as middleware in Express or with a handler in Next.js API routes.
+
+```
+js
+CopyEdit
+import { ApolloServer } from '@apollo/server';
+import express from 'express';
+
+const server = new ApolloServer({ typeDefs, resolvers });
+await server.start();
+app.use('/graphql', expressMiddleware(server));
+
+```
+
+**Follow-up Q:** *How do you integrate Apollo Server with Next.js API routes?*
+
+**A:** Use a custom `pages/api/graphql.js` file to initialize Apollo server and handle the request.
+
+---
+
+### **Q12. What are schema directives in GraphQL?**
+
+**Answer:**
+
+Directives are annotations used to modify GraphQL behavior at runtime or statically (e.g., `@deprecated`, `@include`, `@skip`).
+
+**Follow-up Q:** *Can you create custom directives in Apollo Server?*
+
+**A:** Yes, using `SchemaDirectiveVisitor` or `@graphql-tools/utils`. You can define logic for authorization, formatting, etc.
+
+---
+
+### **Q13. How do you handle authentication in Apollo Server?**
+
+**Answer:**
+
+Use the `context` function to inject the user/auth state per request.
+
+```
+js
+CopyEdit
+const server = new ApolloServer({
+  context: ({ req }) => {
+    const token = req.headers.authorization;
+    const user = verifyToken(token);
+    return { user };
+  }
+});
+
+```
+
+**Follow-up Q:** *How do you restrict access to certain resolvers?*
+
+**A:** Add role checks in resolvers or use schema directives like `@auth(role: "admin")`.
+
+---
+
+### **Q14. What is the purpose of context in Apollo Server?**
+
+**Answer:**
+
+The `context` object is shared across all resolvers during a request. It typically includes user info, database clients, or loaders.
+
+**Follow-up Q:** *Is context shared across requests?*
+
+**A:** No, context is created fresh for each request—preventing data leakage.
+
+---
+
+### **Q15. What is cursor-based pagination in GraphQL?**
+
+**Answer:**
+
+Pagination technique using `cursor` instead of `offset`. It ensures consistent results even if the data changes.
+
+```graphql
+graphql
+CopyEdit
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean
+}
+type PostConnection {
+  edges: [PostEdge]
+  pageInfo: PageInfo
+}
+
+```
+
+**Follow-up Q:** *Why is cursor-based pagination preferred over offset-based?*
+
+**A:** It avoids issues like duplicate or missing items due to inserted/deleted rows between paginated queries.
+
+---
+
+### **Q16. How do you implement offset-based pagination in GraphQL?**
+
+**Answer:**
+
+Pass `limit` and `offset` arguments to the query and apply them in the resolver.
+
+```graphql
+graphql
+CopyEdit
+type Query {
+  posts(limit: Int, offset: Int): [Post]
+}
+
+```
+
+**Follow-up Q:** *What’s a typical downside of offset-based pagination?*
+
+**A:** It can return inconsistent results if the dataset is changing during navigation.
+
+---
+
+### **Q17. How does Apollo Server support file uploads?**
+
+**Answer:**
+
+Via the `graphql-upload` middleware and scalar `Upload`.
+
+```graphql
+graphql
+CopyEdit
+scalar Upload
+type Mutation {
+  uploadFile(file: Upload!): Boolean
+}
+
+```
+
+**Follow-up Q:** *Is file upload support enabled by default in Apollo Server 4+?*
+
+**A:** No, it’s not included by default—you must manually wire `graphql-upload` or handle multipart form parsing.
+
+---
+
+### **Q18. How do you test GraphQL resolvers in Apollo Server?**
+
+**Answer:**
+
+Use integration tests with a test client like `apollo-server-testing` or `supertest` + mocks.
+
+**Follow-up Q:** *Can you mock the schema for unit testing?*
+
+**A:** Yes, with `addMocksToSchema` from `@graphql-tools/mock`.
+
+---
+
+### **Q19. What is introspection and why should you disable it in production?**
+
+**Answer:**
+
+Introspection allows clients to query the schema structure. Useful for tools like GraphQL Playground.
+
+**Follow-up Q:** *How do you disable introspection in Apollo Server?*
+
+**A:** Pass `introspection: false` in the server config, or restrict it conditionally.
+
+---
+
+### **Q20. How do you optimize large GraphQL schemas and resolvers?**
+
+**Answer:**
+
+- Use modular typeDefs and resolvers via `mergeTypeDefs`, `mergeResolvers`
+- Use lazy loading, code splitting
+- Apply caching and batching (e.g., DataLoader)
+
+**Follow-up Q:** *How does modularizing resolvers improve maintainability?*
+
+**A:** It promotes separation of concerns and allows testing or composing schema parts independently.
+
+---
